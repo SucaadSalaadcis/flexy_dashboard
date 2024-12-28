@@ -1,0 +1,16 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+.dropdown-toggle::after {
+    display: none !important; 
+  }
+  
+  
+  .custom-pagination .page-item.active .page-link {
+    background-color: #a41af4 !important;
+    border-color: #a41af4 !important;
+    color: white !important;
+  }
+  
