@@ -5,12 +5,13 @@ import { Box, Button, FormControl, Paper, TextField, Typography } from '@mui/mat
 
 import Select from 'react-select';
 
-import axios from 'axios';
 import toast from 'react-hot-toast';
 import AddIcon from '@mui/icons-material/Add';
 
 import Cookies from 'js-cookie';
 import BackIcon from '../../reusible/BackIcon';
+
+import axiosPublicURL from '../../views/hooks/AxiosHook'
 
 export default function User_post() {
 
@@ -37,8 +38,8 @@ export default function User_post() {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const response = await axios.post(
-                    'https://peculiar-darkness-68u4yutcfh.ploi.dev/api/users/get',
+                const response = await axiosPublicURL().post(
+                    'api/users/get',
                     {},
                     {
                         headers: {
@@ -51,7 +52,7 @@ export default function User_post() {
                 const data = response.data?.data;
 
                 // get branch data
-                const branchResponse = await axios.post('https://peculiar-darkness-68u4yutcfh.ploi.dev/api/branch/get', {}, {
+                const branchResponse = await axiosPublicURL().post('api/branch/get', {}, {
                     headers: { 'Authorization': `Bearer ${getToken()}` },
                 });
                 const branchData = branchResponse.data.data;
@@ -66,7 +67,7 @@ export default function User_post() {
                 // console.log(branch);
 
                 // get zone data 
-                const ZoneResponse = await axios.post('https://peculiar-darkness-68u4yutcfh.ploi.dev/api/branch/get', {}, {
+                const ZoneResponse = await axiosPublicURL().post('api/branch/get', {}, {
                     headers: { 'Authorization': `Bearer ${getToken()}` },
                 });
                 const zoneData = ZoneResponse.data.data;
@@ -107,8 +108,8 @@ export default function User_post() {
         };
 
         try {
-            const response = await axios.post(
-                'https://peculiar-darkness-68u4yutcfh.ploi.dev/api/users/store',
+            const response = await axiosPublicURL().post(
+                'api/users/store',
                 data,
                 {
                     headers: {

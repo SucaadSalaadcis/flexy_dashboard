@@ -5,12 +5,13 @@ import { Box, Button, FormControl, Paper, TextField, Typography } from '@mui/mat
 
 import Select from 'react-select';
 
-import axios from 'axios';
 import toast from 'react-hot-toast';
 import AddIcon from '@mui/icons-material/Add';
 
 import Cookies from 'js-cookie';
 import BackIcon from '../../reusible/BackIcon';
+
+import axiosPublicURL from '../../views/hooks/AxiosHook'
 
 export default function Branch_post() {
 
@@ -40,8 +41,8 @@ export default function Branch_post() {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const response = await axios.post(
-                    'https://peculiar-darkness-68u4yutcfh.ploi.dev/api/branch/get',
+                const response = await axiosPublicURL().post(
+                    'api/branch/get',
                     {},
                     {
                         headers: {
@@ -103,8 +104,8 @@ export default function Branch_post() {
         };
 
         try {
-            const response = await axios.post(
-                'https://peculiar-darkness-68u4yutcfh.ploi.dev/api/branch/store',
+            const response = await axiosPublicURL().post(
+                'api/branch/store',
                 data,
                 {
                     headers: {
