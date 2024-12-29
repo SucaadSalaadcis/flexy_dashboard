@@ -5,8 +5,13 @@ import axios from 'axios';
 import Cookies from 'js-cookie';
 import PaginationControls from './PaginationControls'
 import { Add } from './Add_Edit_View';
+import Swal from 'sweetalert2';
+import { IconButton } from '@mui/material';
+import DeleteIcon from '@mui/icons-material/Delete';
 
-const ReusableDataTable = ({ apiUrl, columns }) => {
+import axiosPublicURL from '../views/hooks/AxiosHook'
+
+const ReusableDataTable = ({ apiUrl, columns, deleteApi }) => {
 
     const [rows, setRows] = useState([]);
     const [loading, setLoading] = useState(false);
@@ -20,7 +25,7 @@ const ReusableDataTable = ({ apiUrl, columns }) => {
     const fetchData = async (page = 1, pageSize = 10) => {
         try {
             setLoading(true);
-            const response = await axios.post(`${apiUrl}?page=${page}&limit=${pageSize}`, {}, {
+            const response = await axiosPublicURL().post(`${apiUrl}?page=${page}&limit=${pageSize}`, {}, {
                 headers: {
                     'Authorization': `Bearer ${getToken()}`,
                     'Content-Type': 'application/x-www-form-urlencoded',
@@ -59,6 +64,71 @@ const ReusableDataTable = ({ apiUrl, columns }) => {
         setCurrentPage(newPage);
     };
 
+
+    // delete data 
+    const handleDelete = (id) => {
+        Swal.fire({
+            title: "Are you sure?",
+            text: "You won't be able to revert this!",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Yes, delete it!",
+        }).then((result) => {
+            if (result.isConfirmed) {
+                axiosPublicURL().post(
+                    `api/${deleteApi}/delete/`,
+                    { id }, // Send the id in the body
+                    {
+                        headers: {
+                            Authorization: `Bearer ${getToken()}`,
+                            "Content-Type": "application/x-www-form-urlencoded",
+                        },
+                    }
+                )
+                    .then(() => {
+                        fetchData();
+                        Swal.fire("Deleted!", "Your data has been deleted.", "success");
+                    })
+                    .catch((error) => {
+                        console.error("Error deleting the record:", error);
+                        Swal.fire(
+                            "Error!",
+                            error.response?.data?.message || "Failed to delete the record.",
+                            "error"
+                        );
+                    });
+            }
+        });
+    };
+
+
+
+    // Add a custom action column
+    const actionColumn = {
+        field: 'actions',
+        headerName: 'Actions',
+        width: 150,
+        renderCell: (params) => (
+            <>
+                <IconButton aria-label="delete"
+                    onClick={() => handleDelete(params.row.id)}
+                >
+                    <DeleteIcon style={{ color: "#E53270" }} />
+                </IconButton>
+                {/* edit component */}
+                {/* <Edit EditParam={params.row.id} /> */}
+
+                {/* edit view */}
+                {/* <View veiwParam={params.row.id} /> */}
+
+            </>
+        ),
+    };
+
+
+
     return (
         <div className="container mx-auto mt-5">
             <div className="flex justify-between mx-auto mb-4">
@@ -84,7 +154,7 @@ const ReusableDataTable = ({ apiUrl, columns }) => {
                 <DataGrid
                     rows={rows}
                     // columns={columns}
-                    columns={[...columns,]}
+                    columns={[...columns, actionColumn]}
                     loading={loading}
                     pagination={false}
                     hideFooter

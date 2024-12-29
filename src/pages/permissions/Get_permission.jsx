@@ -9,7 +9,7 @@ const Get_permission = () => {
             <ReusableDataTable
                 url="api/permissions/load"
                 columns={columns}
-                responsive
+                deleteApi={'permissions'}
             />
         </div>
     );

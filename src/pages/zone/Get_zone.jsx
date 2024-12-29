@@ -80,9 +80,9 @@ export default function Get_zone() {
                     <h1 className="text-2xl font-medium text-center text-[#A41AF4]">Zone Data Table</h1>
                     {/* content page */}
                     <Reusible_data_table
-                        apiUrl="https://peculiar-darkness-68u4yutcfh.ploi.dev/api/zone/get"
+                        apiUrl="api/zone/get"
                         columns={Columns}
-
+                        deleteApi={'zone'}
                     />
                 </div>
             </div>

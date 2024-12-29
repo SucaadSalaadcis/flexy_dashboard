@@ -88,8 +88,9 @@ export default function Get_site() {
                     <h1 className="text-2xl font-medium text-center text-[#A41AF4]">Site Data Table</h1>
                     {/* content page */}
                     <Reusible_data_table
-                        apiUrl="https://peculiar-darkness-68u4yutcfh.ploi.dev/api/site/get"
+                        apiUrl="api/site/get"
                         columns={Columns}
+                        deleteApi={'site'}
                     />
 
                 </div>

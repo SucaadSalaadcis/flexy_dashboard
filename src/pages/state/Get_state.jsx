@@ -52,8 +52,9 @@ export default function Get_state() {
                     <h1 className="text-2xl font-medium text-center text-[#A41AF4]">State Data Table</h1>
                     {/* content page */}
                     <Reusible_data_table
-                        apiUrl="https://peculiar-darkness-68u4yutcfh.ploi.dev/api/state/get"
+                        apiUrl="api/state/get"
                         columns={Columns}
+                        deleteApi={'state'}
                     />
 
                 </div>

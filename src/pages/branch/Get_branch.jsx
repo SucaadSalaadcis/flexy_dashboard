@@ -24,15 +24,15 @@ export default function Get_branch() {
                             textTransform: 'none',
                             minWidth: '120px', // Ensure consistent button width
                         }}
-                        >
+                    >
                         {params.row.short}
 
                     </Button>
                 </>
             ),
         },
-        
-        
+
+
         { field: 'location', headerName: 'Location', width: 150 },
         {
             field: 'land',
@@ -51,7 +51,7 @@ export default function Get_branch() {
                             textTransform: 'none',
                             minWidth: '120px', // Ensure consistent button width
                         }}
-                        >
+                    >
                         {params.row.land}
 
                     </Button>
@@ -77,13 +77,13 @@ export default function Get_branch() {
                             textTransform: 'none',
                             minWidth: '120px', // Ensure consistent button width
                         }}
-                        >
+                    >
                         {params.row.status}
 
                     </Button>
                 </>
             ),
-        },     
+        },
 
     ];
 
@@ -95,8 +95,9 @@ export default function Get_branch() {
                     <h1 className="text-2xl font-medium text-center text-[#A41AF4]">Branch Data Table</h1>
                     {/* content page */}
                     <Reusible_data_table
-                        apiUrl="https://peculiar-darkness-68u4yutcfh.ploi.dev/api/branch/get"
+                        apiUrl="api/branch/get"
                         columns={Columns}
+                        deleteApi={'branch'}
                     />
 
                 </div>

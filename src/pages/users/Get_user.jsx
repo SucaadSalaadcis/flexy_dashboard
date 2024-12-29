@@ -7,7 +7,7 @@ export default function Get_user() {
         { field: 'id', headerName: 'ID', width: 100 },
         { field: 'fullname', headerName: 'Fullname', width: 200 },
         { field: 'user_email', headerName: 'Email', width: 200 },
-    
+
     ];
 
     return (
@@ -18,9 +18,9 @@ export default function Get_user() {
                     <h1 className="text-2xl font-medium text-center text-[#A41AF4]">User Data Table</h1>
                     {/* content page */}
                     <Reusible_data_table
-                        apiUrl="https://peculiar-darkness-68u4yutcfh.ploi.dev/api/users/get"
+                        apiUrl="api/users/get"
                         columns={Columns}
-
+                        deleteApi={ 'users'}
                     />
                 </div>
             </div>

@@ -51,8 +51,9 @@ export default function Get_city() {
                     <h1 className="text-2xl font-medium text-center text-[#A41AF4]">City Data Table</h1>
                     {/* content page */}
                     <Reusible_data_table
-                        apiUrl="https://peculiar-darkness-68u4yutcfh.ploi.dev/api/city/get"
+                        apiUrl="api/city/get"
                         columns={Columns}
+                        deleteApi={'city'}
                     />
 
                 </div>
