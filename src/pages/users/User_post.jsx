@@ -22,10 +22,11 @@ export default function User_post() {
     const [selectedBranch, setSelectedBranch] = useState(null);
     const [getZone, setGetZone] = useState([]);
     const [selectedZone, setSelectedZone] = useState(null);
-    const [role, setRole] = useState([]);
-    const [selectedRole, setSelectedRole] = useState(null)
 
-    // console.log(selectedBranch,selectedZone);
+    // const [role, setRole] = useState([]);
+    // const [selectedRole, setSelectedRole] = useState(null)
+    const [roles, setRoles] = useState('')
+
 
     const navigate = useNavigate();
 
@@ -48,28 +49,6 @@ export default function User_post() {
                 );
 
                 const data = response.data?.data;
-
-                if (!data || data.length === 0) {
-                    console.error("No data found in the API response");
-                    setRole([]); // Gracefully handle empty data
-                    return;
-                }
-
-                console.log("Fetched users:", data); // Log the fetched users
-
-                // Process roles
-                const roles = data.flatMap(user =>
-                    (user.roles || []).flatMap(roleArray =>
-                        (roleArray || []).map(roles => ({
-                            value: roles.id,
-                            label: roles.id,
-                        }))
-                    )
-                );
-
-                setRole(roles);
-                console.log("Processed roles:", roles); // Log the processed roles array
-
 
                 // get branch data
                 const branchResponse = await axios.post('https://peculiar-darkness-68u4yutcfh.ploi.dev/api/branch/get', {}, {
@@ -124,7 +103,7 @@ export default function User_post() {
             user_password,
             branch: selectedBranch.value,
             zone: selectedZone.value,
-            role: selectedRole.value
+            roles,
         };
 
         try {
@@ -199,6 +178,14 @@ export default function User_post() {
                                         value={user_password}
                                         onChange={(e) => setUser_password(e.target.value)}
                                     />
+                                    {/* Input for role 1/2 */}
+                                    <TextField
+                                        required
+                                        id="outlined-required"
+                                        label="Role 1: admin 2: supper_admin"
+                                        value={roles}
+                                        onChange={(e) => setRoles(e.target.value)}
+                                    />
 
                                     {/* Dropdown for selecting */}
                                     <Select
@@ -213,12 +200,7 @@ export default function User_post() {
                                         onChange={setSelectedZone}
                                         placeholder="Select Zone ID"
                                     />
-                                    <Select
-                                        options={role}
-                                        value={selectedRole}
-                                        onChange={setSelectedRole}
-                                        placeholder="Select Role"
-                                    />
+
                                 </FormControl>
                                 <Box display="flex" justifyContent="flex-end" mt={2}>
                                     <Button
