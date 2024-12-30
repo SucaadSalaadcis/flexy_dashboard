@@ -34,6 +34,7 @@ import Edit_country from "../pages/country/Edit_country.jsx";
 import Edit_zone from "../pages/zone/Edit_zone.jsx";
 import Edit_site from "../pages/site/Edit_site.jsx";
 import Edit_user from "../pages/users/Edit_user.jsx";
+import Logout from "../pages/auth/Logout.jsx";
 
 /*****Routes*****/
 const ThemeRoutes = [
@@ -77,6 +78,8 @@ const ThemeRoutes = [
       { path: "edit_zone/:id", element: <Edit_zone /> },
       { path: "edit_site/:id", element: <Edit_site /> },
       { path: "edit_user/:id", element: <Edit_user /> },
+
+      { path: "signout", element: <Logout /> },
     ],
   },
 ];
