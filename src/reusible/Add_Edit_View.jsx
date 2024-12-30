@@ -14,9 +14,9 @@ const pathMap = [
     { path: '/state', endpoint: 'state_post', editEndPoint: 'edit_state', viewEndpoint: 'customer_view' },
     { path: '/city', endpoint: 'city_post', editEndPoint: 'edit_city', viewEndpoint: 'product_view' },
     { path: '/branch', endpoint: 'branch_post', editEndPoint: 'edit_branch', viewEndpoint: 'role_view' },
-    { path: '/zone', endpoint: 'zone_post', viewEndpoint: 'users_view' },
-    { path: '/site', endpoint: 'site_post', viewEndpoint: 'order_view' },
-    { path: '/user', endpoint: 'user_post', viewEndpoint: 'order_view' },
+    { path: '/zone', endpoint: 'zone_post', editEndPoint: 'edit_zone', viewEndpoint: 'users_view' },
+    { path: '/site', endpoint: 'site_post', editEndPoint: 'edit_site', viewEndpoint: 'order_view' },
+    { path: '/user', endpoint: 'user_post', editEndPoint: 'edit_user', viewEndpoint: 'order_view' },
 ];
 
 

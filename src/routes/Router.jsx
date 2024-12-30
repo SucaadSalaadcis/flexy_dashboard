@@ -31,6 +31,9 @@ import Edit_state from "../pages/state/Edit_state.jsx";
 import Edit_city from "../pages/city/Edit_city.jsx";
 import Edit_branch from "../pages/branch/Edit_branch.jsx";
 import Edit_country from "../pages/country/Edit_country.jsx";
+import Edit_zone from "../pages/zone/Edit_zone.jsx";
+import Edit_site from "../pages/site/Edit_site.jsx";
+import Edit_user from "../pages/users/Edit_user.jsx";
 
 /*****Routes*****/
 const ThemeRoutes = [
@@ -71,6 +74,9 @@ const ThemeRoutes = [
       { path: "edit_state/:id", element: <Edit_state /> },
       { path: "edit_city/:id", element: <Edit_city /> },
       { path: "edit_branch/:id", element: <Edit_branch /> },
+      { path: "edit_zone/:id", element: <Edit_zone /> },
+      { path: "edit_site/:id", element: <Edit_site /> },
+      { path: "edit_user/:id", element: <Edit_user /> },
     ],
   },
 ];

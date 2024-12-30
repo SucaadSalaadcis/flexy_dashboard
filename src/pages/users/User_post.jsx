@@ -67,7 +67,7 @@ export default function User_post() {
                 // console.log(branch);
 
                 // get zone data 
-                const ZoneResponse = await axiosPublicURL().post('api/branch/get', {}, {
+                const ZoneResponse = await axiosPublicURL().post('api/zone/get', {}, {
                     headers: { 'Authorization': `Bearer ${getToken()}` },
                 });
                 const zoneData = ZoneResponse.data.data;
