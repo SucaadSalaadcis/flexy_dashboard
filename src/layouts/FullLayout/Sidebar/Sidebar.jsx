@@ -10,10 +10,12 @@ import {
   ListItemIcon,
   ListItemText,
 } from "@mui/material";
+
 import { SidebarWidth } from "../../../assets/global/Theme-variable";
 import LogoIcon from "../Logo/LogoIcon";
+
 import Menuitems from "./data";
-// import Buynow from "./Buynow";
+import natureBg from "../../../assets/images/backgrounds/n3.jpg";
 
 const Sidebar = (props) => {
   const [open, setOpen] = React.useState(true);
@@ -30,7 +32,16 @@ const Sidebar = (props) => {
   };
 
   const SidebarContent = (
-    <Box sx={{ p: 3, height: "calc(100vh - 40px)" }}>
+    <Box sx={{
+      p: 3,
+      // height: "calc(100vh - 40px)",
+      height: "calc(100vh)",
+      backgroundImage: `url(${natureBg})`,
+      backgroundSize: "cover",
+      backgroundPosition: "center",
+      backgroundRepeat: "no-repeat",
+    }}>
+      <img src="" alt="" />
       <Link to="/dashboard">
         <Box sx={{ display: 'flex', alignItems: 'center' }}>
           <LogoIcon />
@@ -41,6 +52,7 @@ const Sidebar = (props) => {
         <List
           sx={{
             mt: 1,
+            color: '#ead4f7'
           }}
         >
           {Menuitems.map((item, index) => {
@@ -65,9 +77,11 @@ const Sidebar = (props) => {
                 >
                   <ListItemIcon
                     sx={{
+
                       ...(pathDirect === item.href || window.location.pathname === item.post_path) && {
                         color: "white",
                       },
+                      color: '#ead4f7'
                     }}
                   >
                     <item.icon width="20" height="20" />
