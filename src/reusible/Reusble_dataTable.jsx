@@ -4,7 +4,7 @@ import { DataGrid } from '@mui/x-data-grid';
 import axios from 'axios';
 import Cookies from 'js-cookie';
 import PaginationControls from './PaginationControls'
-import { Add, Edit } from './Add_Edit_View';
+import { Add, Edit, View } from './Add_Edit_View';
 import Swal from 'sweetalert2';
 import { IconButton } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -121,7 +121,7 @@ const ReusableDataTable = ({ apiUrl, columns, deleteApi }) => {
                 <Edit EditParam={params.row.id} />
 
                 {/* edit view */}
-                {/* <View veiwParam={params.row.id} /> */}
+                <View veiwParam={params.row.id} />
 
             </>
         ),

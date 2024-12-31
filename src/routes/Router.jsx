@@ -35,6 +35,13 @@ import Edit_zone from "../pages/zone/Edit_zone.jsx";
 import Edit_site from "../pages/site/Edit_site.jsx";
 import Edit_user from "../pages/users/Edit_user.jsx";
 import Logout from "../pages/auth/Logout.jsx";
+import View_country from "../pages/country/View_country.jsx";
+import View_city from "../pages/city/View_city.jsx";
+import View_state from "../pages/state/View_state.jsx";
+import View_branch from "../pages/branch/View_branch.jsx";
+import View_zone from "../pages/zone/View_zone.jsx";
+import View_site from "../pages/site/View_site.jsx";
+import View_user from "../pages/users/View_user.jsx";
 
 /*****Routes*****/
 const ThemeRoutes = [
@@ -78,6 +85,14 @@ const ThemeRoutes = [
       { path: "edit_zone/:id", element: <Edit_zone /> },
       { path: "edit_site/:id", element: <Edit_site /> },
       { path: "edit_user/:id", element: <Edit_user /> },
+
+      { path: "view_country/:countryId", element: <View_country /> },
+      { path: "view_city/:cityId", element: <View_city /> },
+      { path: "view_state/:stateId", element: <View_state /> },
+      { path: "view_branch/:branchId", element: <View_branch /> },
+      { path: "view_zone/:zoneId", element: <View_zone /> },
+      { path: "view_site/:siteId", element: <View_site /> },
+      { path: "view_user/:userId", element: <View_user /> },
 
       { path: "signout", element: <Logout /> },
     ],
