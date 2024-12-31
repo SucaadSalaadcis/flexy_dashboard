@@ -77,14 +77,13 @@ const ThemeRoutes = [
       { path: "site_post", element: <Site_post /> },
       { path: "user_post", element: <User_post /> },
 
-
-      { path: "edit_country/:id", element: <Edit_country /> },
-      { path: "edit_state/:id", element: <Edit_state /> },
-      { path: "edit_city/:id", element: <Edit_city /> },
-      { path: "edit_branch/:id", element: <Edit_branch /> },
-      { path: "edit_zone/:id", element: <Edit_zone /> },
-      { path: "edit_site/:id", element: <Edit_site /> },
-      { path: "edit_user/:id", element: <Edit_user /> },
+      { path: "edit_country/:countryId", element: <Edit_country /> },
+      { path: "edit_state/:stateId", element: <Edit_state /> },
+      { path: "edit_city/:cityId", element: <Edit_city /> },
+      { path: "edit_branch/:branchId", element: <Edit_branch /> },
+      { path: "edit_zone/:zoneId", element: <Edit_zone /> },
+      { path: "edit_site/:siteId", element: <Edit_site /> },
+      { path: "edit_user/:userId", element: <Edit_user /> },
 
       { path: "view_country/:countryId", element: <View_country /> },
       { path: "view_city/:cityId", element: <View_city /> },

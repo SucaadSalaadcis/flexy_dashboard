@@ -1,5 +1,5 @@
-import React, { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import React, { useEffect, useState } from 'react'
+import { useNavigate, useParams } from 'react-router-dom'
 
 import { Box, Button, FormControl, Paper, TextField, Typography } from '@mui/material';
 import Cookies from 'js-cookie';
@@ -19,8 +19,49 @@ export default function Edit_country() {
 
     const [country_name, setCountry_name] = useState("");
     const [id, setid] = useState("");
-
+    const { countryId } = useParams();
     const navigate = useNavigate();
+
+
+
+    // Function to fetch country data
+    const handleSingleData = async () => {
+        try {
+            const response = await axiosPublicURL().post(
+                'api/country/get',
+                {},
+                {
+                    headers: {
+                        Authorization: `Bearer ${getToken()}`,
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                }
+            );
+
+            // Extract data
+            const countries = response.data?.data;
+            console.log(countries)
+            // Find the country by ID
+            const country = countries?.find(item => item.id === parseInt(countryId));
+
+            if (country) {
+                setCountry_name(country.country_name || '');
+                setid(country.id || '');
+            } else {
+                toast.error('Country not found.');
+            }
+        } catch (error) {
+            console.error('Error fetching country data:', error);
+            toast.error('An error occurred while fetching country data.');
+        }
+    };
+
+    // Fetch data on component mount
+    useEffect(() => {
+        handleSingleData();
+    }, []);
+
+
 
 
     // edit
@@ -86,9 +127,6 @@ export default function Edit_country() {
                             </Paper>
                         </div>
                     </div>
-
-
-
                 </div>
             </main>
 

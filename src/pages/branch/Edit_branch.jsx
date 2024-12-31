@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 
 import { Box, Button, FormControl, Paper, TextField, Typography } from '@mui/material';
 import Cookies from 'js-cookie';
@@ -18,7 +18,7 @@ export default function Edit_branch() {
     const getToken = () => {
         return Cookies.get('token');
     };
-    const [id, setid] = useState();
+    const [id, setid] = useState('');
     const [branch, setBranch] = useState('');
     const [short, setShort] = useState('');
     const [location, setLocation] = useState('');
@@ -28,14 +28,78 @@ export default function Edit_branch() {
     const [remark, setRemark] = useState('');
     const [biller, setBiller] = useState('');
     const [land, setLand] = useState('');
+    const [stateId, setStateId] = useState('');
+    const [cityId, setCityId] = useState('');
 
     const [getCity, setGetCity] = useState('');
     const [selectedCity, setSelectedCity] = useState('');
     const [getState, setGetState] = useState('');
     const [selectedState, setSelectedState] = useState('');
 
+    const { branchId } = useParams();
 
     const navigate = useNavigate();
+
+
+
+    const handleSingleData = async () => {
+        try {
+            const response = await axiosPublicURL().post(
+                'api/branch/get',
+                {},
+                {
+                    headers: {
+                        Authorization: `Bearer ${getToken()}`,
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                }
+            );
+
+            // Extract data
+            const branches = response.data?.data;
+            console.log(branches);
+            // Find the branch by ID
+            const branch = branches?.find(item => item.id === parseInt(branchId));
+
+            if (branch) {
+                setBranch(branch.name || '');
+                setid(branch.id);
+                setShort(branch.short);
+                setLocation(branch.location);
+                setMail(branch.mail);
+                setNumber(branch.number);
+                setTerm(branch.term);
+                setRemark(branch.remark);
+                setBiller(branch.biller);
+                setLand(branch.land);
+
+                // Extract state details
+                const stateID = branch.state.id;
+                // Option for Select
+                const stateOption = { value: stateID, label: stateID };
+                setStateId(stateOption);
+
+                // Extract city details
+                const cityID = branch.city.id;
+                // Option for Select
+                const cityOption = { value: cityID, label: cityID };
+                setCityId(cityOption);
+
+            } else {
+                toast.error('Branch not found.');
+            }
+        } catch (error) {
+            console.error('Error fetching branch data:', error);
+            toast.error('An error occurred while fetching branch data.');
+        }
+    };
+
+
+    useEffect(() => {
+        handleSingleData();
+    }, []);
+
+
 
     // get branch
     useEffect(() => {
@@ -219,18 +283,22 @@ export default function Edit_branch() {
                                         value={land}
                                         onChange={(e) => setLand(e.target.value)}
                                     />
-
-                                    {/* Dropdown for selecting  */}
                                     <Select
                                         options={getCity}
-                                        value={selectedCity} // Selected value
-                                        onChange={setSelectedCity} // Update selected state
+                                        value={cityId} // Selected value
+                                        onChange={(selected) => {
+                                            setCityId(selected); // Update selected country in state
+                                            setSelectedCity(selected); // Optionally update additional state
+                                        }}
                                         placeholder="Select City ID"
                                     />
                                     <Select
                                         options={getState}
-                                        value={selectedState}
-                                        onChange={setSelectedState}
+                                        value={stateId} // Selected value (single object with `value` and `label`)
+                                        onChange={(selected) => {
+                                            setStateId(selected); // Update selected country in state
+                                            setSelectedState(selected); // Optionally update additional state
+                                        }}
                                         placeholder="Select State ID"
                                     />
                                 </FormControl>

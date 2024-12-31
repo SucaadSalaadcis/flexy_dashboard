@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 
 import { Box, Button, FormControl, Paper, TextField, Typography } from '@mui/material';
 import Cookies from 'js-cookie';
@@ -22,15 +22,73 @@ export default function Edit_site() {
     const [id, setid] = useState('');
     const [site, setSite] = useState('');
     const [short, setShort] = useState('');
+    const [branchId, setBranchId] = useState('');
+    const [zoneId, setZoneId] = useState('');
+
     const [getBranch, setGetBranch] = useState([]);
     const [selectedBranch, setSelectedBranch] = useState(null);
     const [getZone, setGetZone] = useState([]);
     const [selectedZone, setSelectedZone] = useState(null);
     // console.log(selectedBranch,selectedZone);
 
-
+    const { siteId } = useParams();
 
     const navigate = useNavigate();
+
+
+
+    const handleSingleData = async () => {
+        try {
+            const response = await axiosPublicURL().post(
+                'api/site/get',
+                {},
+                {
+                    headers: {
+                        Authorization: `Bearer ${getToken()}`,
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                }
+            );
+
+            // Extract data
+            const sities = response.data?.data;
+
+            // Find the country by ID
+            const site = sities?.find(item => item.id === parseInt(siteId));
+            console.log(site);
+
+            if (site) {
+                setSite(site.site || '');
+                setShort(site.short || '');
+                setid(site.id || '');
+
+                // Extract branch details
+                const branchID = site.branch.id;
+                // Option for Select
+                const branchOption = { value: branchID, label: branchID };
+                setBranchId(branchOption);
+
+                // Extract zone details
+                const zoneID = site.zone.id;
+                const zoneOption = { value: zoneID, label: zoneID };
+                setZoneId(zoneOption);
+
+
+            } else {
+                toast.error('Site not found.');
+            }
+        } catch (error) {
+            console.error('Error fetching site data:', error);
+            toast.error('An error occurred while fetching site data.');
+        }
+    };
+
+    // Fetch data on component mount
+    useEffect(() => {
+        handleSingleData();
+    }, []);
+
+
 
     // get site
     useEffect(() => {
@@ -153,14 +211,20 @@ export default function Edit_site() {
                                     {/* Dropdown for selecting */}
                                     <Select
                                         options={getBranch}
-                                        value={selectedBranch} // Selected value
-                                        onChange={setSelectedBranch} // Update selected branch
+                                        value={branchId} // Selected value (single object with `value` and `label`)
+                                        onChange={(selected) => {
+                                            setBranchId(selected); // Update selected country in state
+                                            setSelectedBranch(selected); // Optionally update additional state
+                                        }}
                                         placeholder="Select Branch ID"
                                     />
                                     <Select
                                         options={getZone}
-                                        value={selectedZone}
-                                        onChange={setSelectedZone}
+                                        value={zoneId} // Selected value (single object with `value` and `label`)
+                                        onChange={(selected) => {
+                                            setZoneId(selected); // Update selected country in state
+                                            setSelectedZone(selected); // Optionally update additional state
+                                        }}
                                         placeholder="Select Zone ID"
                                     />
                                 </FormControl>

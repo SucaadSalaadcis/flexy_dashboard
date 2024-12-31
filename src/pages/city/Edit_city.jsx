@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 
 import { Box, Button, FormControl, Paper, TextField, Typography } from '@mui/material';
 import Cookies from 'js-cookie';
@@ -21,12 +21,64 @@ export default function Edit_city() {
 
     const [id, setid] = useState('');
     const [city, setCity] = useState('');
-    const [getStates, setGetStates] = useState([]); 
+    const [stateId, setStateId] = useState('');
+
+    const [getStates, setGetStates] = useState([]);
     const [selectedState, setSelectedState] = useState(null);
     // console.log(selectedState); 
-
+    
+    const { cityId } = useParams();
 
     const navigate = useNavigate();
+
+
+
+    // Function to fetch country data
+    const handleSingleData = async () => {
+        try {
+            const response = await axiosPublicURL().post(
+                'api/city/get',
+                {},
+                {
+                    headers: {
+                        Authorization: `Bearer ${getToken()}`,
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                }
+            );
+
+            // Extract data
+            const cities = response.data?.data;
+
+            // Find the city by ID
+            const city = cities?.find(item => item.id === parseInt(cityId));
+            // console.log(city);
+            if (city) {
+                setCity(city.name || '');
+                setid(city.id || '');
+
+                // Extract state details
+                const stateID = city.state.id;
+
+                // Option for Select
+                const stateOption = { value: stateID, label: stateID };
+                setStateId(stateOption);
+                
+            } else {
+                toast.error('City not found.');
+            }
+        } catch (error) {
+            console.error('Error fetching city data:', error);
+            toast.error('An error occurred while fetching city data.');
+        }
+    };
+
+    // Fetch data on component mount
+    useEffect(() => {
+        handleSingleData();
+    }, []);
+
+
 
     // get city
     useEffect(() => {
@@ -129,9 +181,12 @@ export default function Edit_city() {
 
                                     {/* Dropdown for selecting state */}
                                     <Select
-                                        options={getStates}
-                                        value={selectedState} // Selected value
-                                        onChange={setSelectedState} // Update selected state
+                                        options={getStates} 
+                                        value={stateId} // Selected value (single object with `value` and `label`)
+                                        onChange={(selected) => {
+                                            setStateId(selected); // Update selected country in state
+                                            setSelectedState(selected); // Optionally update additional state
+                                        }}
                                         placeholder="Select State ID"
                                     />
                                 </FormControl>
@@ -151,7 +206,6 @@ export default function Edit_city() {
                 </div>
             </main>
         </body>
-
 
     )
 }

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 
 import { Box, Button, FormControl, Paper, TextField, Typography } from '@mui/material';
 import Cookies from 'js-cookie';
@@ -23,6 +23,8 @@ export default function Edit_user() {
   const [fullname, setFullname] = useState('');
   const [user_email, setUser_email] = useState('');
   const [user_password, setUser_password] = useState('');
+  const [branchId, setBranchId] = useState('');
+  const [zoneId, setZoneId] = useState('');
 
   const [getBranch, setGetBranch] = useState([]);
   const [selectedBranch, setSelectedBranch] = useState(null);
@@ -31,8 +33,80 @@ export default function Edit_user() {
   const [roles, setRoles] = useState('')
 
 
+  const { userId } = useParams();
 
   const navigate = useNavigate();
+
+
+  const handleSingleData = async () => {
+    try {
+      const response = await axiosPublicURL().post(
+        'api/users/get',
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${getToken()}`,
+            'Content-Type': 'application/x-www-form-urlencoded',
+          },
+        }
+      );
+
+      // Extract data
+      const users = response.data?.data;
+      // console.log(users);
+
+      // Find the user by ID
+      const user = users?.find(item => item.id === parseInt(userId));
+      // console.log(user);
+
+      if (user) {
+        setFullname(user.fullname || '');
+        setUser_email(user.user_email || '');
+        setid(user.id || '');
+        // fleatMap combines all the value into one array
+        setRoles(user.roles.flatMap((ele) => ele.map((role) => role.role_name)));
+
+        // get branch data
+        const branchResponse = await axiosPublicURL().post('api/branch/get', {}, {
+          headers: { 'Authorization': `Bearer ${getToken()}` },
+        });
+        const branchData = branchResponse.data.data;
+
+        // Correctly map the data to the format required by react-select
+        const branch = branchData.map((item) => ({
+          value: item.id,
+          label: item.id,
+        }));
+
+        setBranchId(branch);
+
+        // get zone data 
+        const ZoneResponse = await axiosPublicURL().post('api/zone/get', {}, {
+          headers: { 'Authorization': `Bearer ${getToken()}` },
+        });
+        const zoneData = ZoneResponse.data.data;
+        // console.log(zoneData);
+
+        const zone = zoneData.map((item) => ({
+          value: item.id,
+          label: item.id,
+        }));
+
+        setZoneId(zone);
+
+      } else {
+        toast.error('User not found.');
+      }
+    } catch (error) {
+      console.error('Error fetching user data:', error);
+      toast.error('An error occurred while fetching user data.');
+    }
+  };
+
+  // Fetch data on component mount
+  useEffect(() => {
+    handleSingleData();
+  }, []);
 
 
   // get user
@@ -185,17 +259,22 @@ export default function Edit_user() {
                     onChange={(e) => setRoles(e.target.value)}
                   />
 
-                  {/* Dropdown for selecting */}
                   <Select
                     options={getBranch}
-                    value={selectedBranch} // Selected value
-                    onChange={setSelectedBranch} // Update selected branch
+                    value={branchId} // Selected value (single object with `value` and `label`)
+                    onChange={(selected) => {
+                      setBranchId(selected); // Update selected country in state
+                      setSelectedBranch(selected); // Optionally update additional state
+                    }}
                     placeholder="Select Branch ID"
                   />
                   <Select
                     options={getZone}
-                    value={selectedZone}
-                    onChange={setSelectedZone}
+                    value={zoneId} // Selected value (single object with `value` and `label`)
+                    onChange={(selected) => {
+                      setZoneId(selected); // Update selected country in state
+                      setSelectedZone(selected); // Optionally update additional state
+                    }}
                     placeholder="Select Zone ID"
                   />
 
