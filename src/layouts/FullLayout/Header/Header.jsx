@@ -1,10 +1,6 @@
 import React from "react";
-//import { Link } from 'react-router-dom';
-
 import MenuOutlinedIcon from '@mui/icons-material/MenuOutlined';
 import NotificationsNoneOutlinedIcon from '@mui/icons-material/NotificationsNoneOutlined';
-import AddToPhotosOutlinedIcon from '@mui/icons-material/AddToPhotosOutlined';
-import PersonAddOutlinedIcon from '@mui/icons-material/PersonAddOutlined';
 import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined';
 import LogoutOutlinedIcon from '@mui/icons-material/LogoutOutlined';
 
@@ -199,12 +195,6 @@ const Header = (props) => {
             </Box>
           </MenuItem>
           <Divider />
-          <MenuItem onClick={handleClose4}>
-            <ListItemIcon>
-              <PersonAddOutlinedIcon fontSize="small" />
-            </ListItemIcon>
-            Add another account
-          </MenuItem>
           <MenuItem onClick={handleClose4}>
             <ListItemIcon>
               <SettingsOutlinedIcon fontSize="small" />
