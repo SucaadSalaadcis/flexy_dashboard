@@ -60,16 +60,18 @@ export default function Branch_post() {
                 }));
                 setGetCity(city);
                 // console.log(city);
-                
-              
+
+
+          
                 const states = data.map((item) => ({
-                    value: item.state.id,
-                    label: item.state.id,
+                    value: item.state?.id || null, // Use optional chaining to handle undefined/null `state`
+                    label: item.state?.id || 'No State ID', // Provide a fallback label if `state.id` is unavailable
                 }));
+
                 setGetState(states);
                 // console.log(states);
 
-         
+
 
             } catch (error) {
                 console.error('Error fetching data:', error);
@@ -85,7 +87,7 @@ export default function Branch_post() {
         e.preventDefault();
 
         if (!selectedState && !selectedCity) {
-            toast.error('Please select a state.');
+            toast.error('Please select a State or City.');
             return;
         }
 
@@ -233,8 +235,8 @@ export default function Branch_post() {
                                     />
                                     <Select
                                         options={getState}
-                                        value={selectedState} 
-                                        onChange={setSelectedState} 
+                                        value={selectedState}
+                                        onChange={setSelectedState}
                                         placeholder="Select State ID"
                                     />
                                 </FormControl>

@@ -23,9 +23,6 @@ export default function User_post() {
     const [selectedBranch, setSelectedBranch] = useState(null);
     const [getZone, setGetZone] = useState([]);
     const [selectedZone, setSelectedZone] = useState(null);
-
-    // const [role, setRole] = useState([]);
-    // const [selectedRole, setSelectedRole] = useState(null)
     const [roles, setRoles] = useState('')
 
 
@@ -94,7 +91,7 @@ export default function User_post() {
         e.preventDefault();
 
         if (!selectedBranch && !selectedZone) {
-            toast.error('Please select a state.');
+            toast.error('Please select Branch or Zone.');
             return;
         }
 

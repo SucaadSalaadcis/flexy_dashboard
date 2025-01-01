@@ -73,7 +73,7 @@ export default function Site_post() {
         e.preventDefault();
 
         if (!selectedBranch && !selectedZone) {
-            toast.error('Please select a state.');
+            toast.error('Please select Branch or Zone.');
             return;
         }
 

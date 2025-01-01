@@ -4,10 +4,8 @@ import Reusible_data_table from '../../reusible/Reusble_dataTable';
 export default function Get_user() {
 
     const Columns = [
-        { field: 'id', headerName: 'ID', width: 100 },
-        { field: 'fullname', headerName: 'Fullname', width: 200 },
-        { field: 'user_email', headerName: 'Email', width: 200 },
-
+        { field: 'id', headerName: 'ID', width: 400 },
+        { field: 'fullname', headerName: 'Fullname', width: 400 },
     ];
 
     return (

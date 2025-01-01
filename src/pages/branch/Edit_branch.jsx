@@ -127,9 +127,10 @@ export default function Edit_branch() {
 
 
                 const states = data.map((item) => ({
-                    value: item.state.id,
-                    label: item.state.id,
+                    value: item.state?.id || null, // Use optional chaining to handle undefined/null `state`
+                    label: item.state?.id || 'No State ID', // Provide a fallback label if `state.id` is unavailable
                 }));
+
                 setGetState(states);
                 // console.log(states);
 
@@ -147,6 +148,11 @@ export default function Edit_branch() {
     // edit
     const handleUpdate = (e) => {
         e.preventDefault();
+        
+        if (!selectedState && !selectedCity) {
+            toast.error('Please select a State or City.');
+            return;
+        }
         const data = {
             id,
             branch,

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 
 import { Box, Button, FormControl, Paper, TextField, Typography } from '@mui/material';
 import Cookies from 'js-cookie';
@@ -21,11 +21,68 @@ export default function Edit_state() {
 
     const [id, setid] = useState('');
     const [region, setRegion] = useState('');
+    const [countryId, setCountryId] = useState('');
+
     const [getCountry, setGetCountry] = useState([]);
     const [selectedCountry, setSelectedCountry] = useState(null);
     // console.log(selectedState); // state id ga a dortey
 
+    const { stateId } = useParams();
+
     const navigate = useNavigate();
+
+
+    const handleSingleData = async () => {
+        try {
+            const response = await axiosPublicURL().post(
+                'api/state/get',
+                {},
+                {
+                    headers: {
+                        Authorization: `Bearer ${getToken()}`,
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                }
+            );
+
+            // Extract data
+            const staties = response.data?.data;
+
+            // Find the state by ID
+            const state = staties?.find((item) => item.id === parseInt(stateId));
+            console.log(state);
+
+            if (state) {
+                console.log(state.country.id);
+
+                // Update region and state ID
+                setRegion(state.name || '');
+                setid(state.id || '');
+
+                // Extract country details
+                const countryId = state.country.id;
+                const countryName = state.country.name;
+
+                // Option for Select
+                const countryOption = { value: countryId, label: countryId };
+
+                // Update selected country in state
+                setCountryId(countryOption);
+            } else {
+                toast.error('City not found.');
+            }
+        } catch (error) {
+            console.error('Error fetching state data:', error);
+            toast.error('An error occurred while fetching state data.');
+        }
+    };
+
+    // Fetch data on component mount
+    useEffect(() => {
+        handleSingleData();
+    }, []);
+
+
 
     // get country
     useEffect(() => {
@@ -63,6 +120,11 @@ export default function Edit_state() {
     // edit
     const handleUpdate = (e) => {
         e.preventDefault();
+
+        if (!selectedCountry) {
+            toast.error('Please select Country.');
+            return;
+        }
         axiosPublicURL().post(`api/state/update`, {
             id, region,
             country: selectedCountry.value, // Correct field name is "country"
@@ -126,10 +188,19 @@ export default function Edit_state() {
                                     />
 
                                     {/* Dropdown for selecting state */}
-                                    <Select
+                                    {/* <Select
                                         options={getCountry}
                                         value={selectedCountry} // Selected value
                                         onChange={setSelectedCountry} // Update selected state
+                                        placeholder="Select Country ID"
+                                    /> */}
+                                    <Select
+                                        options={getCountry} // Options list
+                                        value={countryId} // Selected value (single object with `value` and `label`)
+                                        onChange={(selected) => {
+                                            setCountryId(selected); // Update selected country in state
+                                            setSelectedCountry(selected); // Optionally update additional state
+                                        }}
                                         placeholder="Select Country ID"
                                     />
                                 </FormControl>

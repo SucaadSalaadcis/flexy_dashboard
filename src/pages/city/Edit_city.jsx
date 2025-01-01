@@ -26,7 +26,7 @@ export default function Edit_city() {
     const [getStates, setGetStates] = useState([]);
     const [selectedState, setSelectedState] = useState(null);
     // console.log(selectedState); 
-    
+
     const { cityId } = useParams();
 
     const navigate = useNavigate();
@@ -63,7 +63,7 @@ export default function Edit_city() {
                 // Option for Select
                 const stateOption = { value: stateID, label: stateID };
                 setStateId(stateOption);
-                
+
             } else {
                 toast.error('City not found.');
             }
@@ -117,6 +117,12 @@ export default function Edit_city() {
     // edit
     const handleUpdate = (e) => {
         e.preventDefault();
+
+        if (!selectedState) {
+            toast.error('Please select a state.');
+            return;
+        }
+
         axiosPublicURL().post(`api/city/update`, {
             id, city,
             state: selectedState.value,
@@ -181,7 +187,7 @@ export default function Edit_city() {
 
                                     {/* Dropdown for selecting state */}
                                     <Select
-                                        options={getStates} 
+                                        options={getStates}
                                         value={stateId} // Selected value (single object with `value` and `label`)
                                         onChange={(selected) => {
                                             setStateId(selected); // Update selected country in state

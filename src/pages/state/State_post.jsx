@@ -63,7 +63,7 @@ export default function State_post() {
         e.preventDefault();
 
         if (!selectedCountry) {
-            toast.error('Please select a state.');
+            toast.error('Please select Country.');
             return;
         }
 

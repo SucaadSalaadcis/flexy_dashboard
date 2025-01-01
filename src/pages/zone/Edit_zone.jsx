@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 
 import { Box, Button, FormControl, Paper, TextField, Typography } from '@mui/material';
 import Cookies from 'js-cookie';
@@ -22,12 +22,65 @@ export default function Edit_zone() {
     const [id, setid] = useState('');
     const [zone, setZone] = useState('');
     const [short, setShort] = useState('');
+    const [branchId, setBranchId] = useState('');
+
     const [getBranch, setGetBranch] = useState([]);
     const [selectedBranch, setSelectedBranch] = useState(null);
     // console.log(selectedBranch); 
 
+    const { zoneId } = useParams();
 
     const navigate = useNavigate();
+
+
+    const handleSingleData = async () => {
+        try {
+            const response = await axiosPublicURL().post(
+                'api/zone/get',
+                {},
+                {
+                    headers: {
+                        Authorization: `Bearer ${getToken()}`,
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                }
+            );
+
+            // Extract data
+            const zonies = response.data?.data;
+
+            // Find the country by ID
+            const zone = zonies?.find(item => item.id === parseInt(zoneId));
+            console.log(zone);
+
+            if (zone) {
+                setZone(zone.zone || '');
+                setShort(zone.short || '');
+                setid(zone.id || '');
+
+                // Extract branch details
+                const branchID = zone.branch.id;
+
+                // Option for Select
+                const branchOption = { value: branchID, label: branchID };
+
+
+                setBranchId(branchOption);
+            } else {
+                toast.error('Zone not found.');
+            }
+        } catch (error) {
+            console.error('Error fetching zone data:', error);
+            toast.error('An error occurred while fetching zone data.');
+        }
+    };
+
+    // Fetch data on component mount
+    useEffect(() => {
+        handleSingleData();
+    }, []);
+
+
 
     // get zone
     useEffect(() => {
@@ -140,8 +193,11 @@ export default function Edit_zone() {
                                     {/* Dropdown for selecting state */}
                                     <Select
                                         options={getBranch}
-                                        value={selectedBranch} // Selected value
-                                        onChange={setSelectedBranch} // Update selected branch
+                                        value={branchId} // Selected value (single object with `value` and `label`)
+                                        onChange={(selected) => {
+                                            setBranchId(selected); // Update selected country in state
+                                            setSelectedBranch(selected); // Optionally update additional state
+                                        }}
                                         placeholder="Select Branch ID"
                                     />
                                 </FormControl>

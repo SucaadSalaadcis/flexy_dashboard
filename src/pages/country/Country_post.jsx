@@ -27,6 +27,7 @@ export default function Country_post() {
     // post
     const handlePost = async (e) => {
         e.preventDefault();
+        
         const data = {
             country_name, status,
         }

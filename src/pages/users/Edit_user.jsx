@@ -168,6 +168,11 @@ export default function Edit_user() {
   // edit
   const handleUpdate = (e) => {
     e.preventDefault();
+
+    if (!selectedBranch && !selectedZone) {
+      toast.error('Please select Branch or Zone.');
+      return;
+    }
     axiosPublicURL().post(`api/users/update`, {
       id,
       fullname,
