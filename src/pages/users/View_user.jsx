@@ -92,7 +92,7 @@ export default function View_user() {
                                     padding: '71px',
                                     borderRadius: '8px',
                                     boxShadow: '0 4px 6px rgba(164, 26, 244, 0.5)',
-                                    backgroundImage: 'url(https://img.freepik.com/premium-photo/view-sky-city-sunset-landscape_20658-213.jpg?w=740)',
+                                    backgroundImage: 'url(https://img.freepik.com/premium-photo/bright-beautiful-sunset-outside-city-orange-blue_356877-1518.jpg?w=740)',
                                     backgroundSize: 'cover',
                                     backgroundPosition: 'center',
                                     color: '#fff',
