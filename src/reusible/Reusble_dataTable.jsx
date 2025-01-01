@@ -1,53 +1,61 @@
 
-import React, { useEffect, useState } from 'react';
-import { DataGrid } from '@mui/x-data-grid';
-import axios from 'axios';
-import Cookies from 'js-cookie';
-import PaginationControls from './PaginationControls'
-import { Add, Edit, View } from './Add_Edit_View';
-import Swal from 'sweetalert2';
-import { IconButton } from '@mui/material';
-import DeleteIcon from '@mui/icons-material/Delete';
 
-import axiosPublicURL from '../views/hooks/AxiosHook'
+//////////////// added s
+import React, { useEffect, useState } from "react";
+import { DataGrid } from "@mui/x-data-grid";
+import axios from "axios";
+import Cookies from "js-cookie";
+import PaginationControls from "./PaginationControls";
+import { Add, Edit, View } from "./Add_Edit_View";
+import Swal from "sweetalert2";
+import { IconButton } from "@mui/material";
+import DeleteIcon from "@mui/icons-material/Delete";
+
+import axiosPublicURL from "../views/hooks/AxiosHook";
 
 const ReusableDataTable = ({ apiUrl, columns, deleteApi }) => {
-
     const [rows, setRows] = useState([]);
     const [loading, setLoading] = useState(false);
     const [currentPage, setCurrentPage] = useState(1);
     const [pageSize, setPageSize] = useState(10); // Default page size
     const [totalPages, setTotalPages] = useState(1);
 
-    const getToken = () => Cookies.get('token');
+    const [searchQuery, setSearchQuery] = useState(""); // Search query state
+    const [filteredRows, setFilteredRows] = useState([]); // Filtered rows for search
+
+    const getToken = () => Cookies.get("token");
 
     // Fetch data from API
     const fetchData = async (page = 1, pageSize = 10) => {
         try {
             setLoading(true);
-            const response = await axiosPublicURL().post(`${apiUrl}?page=${page}&limit=${pageSize}`, {}, {
-                headers: {
-                    'Authorization': `Bearer ${getToken()}`,
-                    'Content-Type': 'application/x-www-form-urlencoded',
-                },
-            });
+            const response = await axiosPublicURL().post(
+                `${apiUrl}?page=${page}&per_page=${pageSize}`,
+                {},
+                {
+                    headers: {
+                        Authorization: `Bearer ${getToken()}`,
+                        "Content-Type": "application/x-www-form-urlencoded",
+                    },
+                }
+            );
 
             const data = response.data?.data || [];
             const meta = response.data?.meta || {};
-            const lastPage = meta.last_page || 1;
-            const currentPage = meta.current_page || 1;
+            const lastPage = Math.ceil(meta.total / pageSize); // Calculate total pages dynamically
+            const currentPage = meta.page || 1; // Correct page number in the response
 
             setTotalPages(lastPage);
             setCurrentPage(currentPage);
             setRows(data);
+            setFilteredRows(data); // Initialize filtered rows
         } catch (error) {
-            console.error('Error fetching data:', error);
+            console.error("Error fetching data:", error);
         } finally {
             setLoading(false);
         }
     };
 
-    // Trigger fetchData when currentPage, apiUrl, or pageSize changes
     useEffect(() => {
         fetchData(currentPage, pageSize);
     }, [currentPage, apiUrl, pageSize]);
@@ -64,8 +72,32 @@ const ReusableDataTable = ({ apiUrl, columns, deleteApi }) => {
         setCurrentPage(newPage);
     };
 
+    // Handle search query change
+    const handleSearchChange = (event) => {
+        const query = event.target.value.toLowerCase();
+        setSearchQuery(query);
 
-    // delete data 
+        if (query) {
+            /*   rows.filter((row) => ...): Loops through each row in the rows array and keeps only the rows that match the condition inside the filter() function.
+      Object.values(row): Converts the row object into an array of its values (e.g., for { id: 1, name: 'John' }, it becomes [1, 'John']).
+      .some((value) => ...): Checks if any value in the row matches the search query.
+      value.toString().toLowerCase().includes(query):
+      .includes(query): Checks if the value contains the search query. */
+
+            const filtered = rows.filter((row) =>
+                Object.values(row).some(
+                    (value) =>
+                        value &&
+                        value.toString().toLowerCase().includes(query)
+                )
+            );
+            setFilteredRows(filtered);
+        } else {
+            setFilteredRows(rows); // Reset to original rows if search query is empty
+        }
+    };
+
+    // delete data
     const handleDelete = (id) => {
         Swal.fire({
             title: "Are you sure?",
@@ -77,16 +109,17 @@ const ReusableDataTable = ({ apiUrl, columns, deleteApi }) => {
             confirmButtonText: "Yes, delete it!",
         }).then((result) => {
             if (result.isConfirmed) {
-                axiosPublicURL().post(
-                    `api/${deleteApi}/delete/`,
-                    { id }, // Send the id in the body
-                    {
-                        headers: {
-                            Authorization: `Bearer ${getToken()}`,
-                            "Content-Type": "application/x-www-form-urlencoded",
-                        },
-                    }
-                )
+                axiosPublicURL()
+                    .post(
+                        `api/${deleteApi}/delete/`,
+                        { id }, // Send the id in the body
+                        {
+                            headers: {
+                                Authorization: `Bearer ${getToken()}`,
+                                "Content-Type": "application/x-www-form-urlencoded",
+                            },
+                        }
+                    )
                     .then(() => {
                         fetchData();
                         Swal.fire("Deleted!", "Your data has been deleted.", "success");
@@ -103,16 +136,15 @@ const ReusableDataTable = ({ apiUrl, columns, deleteApi }) => {
         });
     };
 
-
-
     // Add a custom action column
     const actionColumn = {
-        field: 'actions',
-        headerName: 'Actions',
+        field: "actions",
+        headerName: "Actions",
         width: 150,
         renderCell: (params) => (
             <>
-                <IconButton aria-label="delete"
+                <IconButton
+                    aria-label="delete"
                     onClick={() => handleDelete(params.row.id)}
                 >
                     <DeleteIcon style={{ color: "#E53270" }} />
@@ -122,19 +154,19 @@ const ReusableDataTable = ({ apiUrl, columns, deleteApi }) => {
 
                 {/* edit view */}
                 <View veiwParam={params.row.id} />
-
             </>
         ),
     };
 
-
-
     return (
         <div className="container mx-auto mt-5">
             <div className="flex justify-between mx-auto mb-4">
+
                 {/* Page Size Dropdown */}
                 <div>
-                    <label htmlFor="pageSize" className="mr-2">Page Size:</label>
+                    <label htmlFor="pageSize" className="mr-2">
+                        Page Size:
+                    </label>
                     <select
                         id="pageSize"
                         value={pageSize}
@@ -147,13 +179,30 @@ const ReusableDataTable = ({ apiUrl, columns, deleteApi }) => {
                         <option value={50}>50</option>
                     </select>
                 </div>
+
+                {/* Search Bar */}
+                <div>
+                    <label htmlFor="search" className="mr-2">
+                        Search:
+                    </label>
+                    <input
+                        id="search"
+                        type="text"
+                        value={searchQuery}
+                        onChange={handleSearchChange}
+                        placeholder="Search..."
+                        className="px-2 py-1 border border-gray-300 rounded"
+                    />
+                </div>
+
+            </div>
+            <div className="mb-3">
                 <Add />
             </div>
-            {/* data grid */}
-            <div style={{ width: '100%' }}>
+            {/* Data Grid */}
+            <div style={{ width: "100%" }}>
                 <DataGrid
-                    rows={rows}
-                    // columns={columns}
+                    rows={filteredRows} // Use filtered rows for display
                     columns={[...columns, actionColumn]}
                     loading={loading}
                     pagination={false}
@@ -161,49 +210,36 @@ const ReusableDataTable = ({ apiUrl, columns, deleteApi }) => {
                     disableSelectionOnClick
                     getRowHeight={() => 70} // Increase row height to fit content
                     getRowClassName={(params) =>
-                        `row-${params.row.id % 2 === 0 ? 'even' : 'odd'}`
+                        `row-${params.row.id % 2 === 0 ? "even" : "odd"}`
                     }
                     sx={{
                         // Styles for even and odd rows
-                        '& .row-even': {
-                            backgroundColor: '#f9f9f9', // Light grey for even rows
+                        "& .row-even": {
+                            backgroundColor: "#f9f9f9", // Light grey for even rows
                         },
-                        '& .row-odd': {
-                            backgroundColor: '#ffffff', // White for odd rows
+                        "& .row-odd": {
+                            backgroundColor: "#ffffff", // White for odd rows
                         },
-
-                        //& refers to the parent element where this style is being applied
-                        // .MuiDataGrid-columnHeader : wa mui class
-                        '& .MuiDataGrid-columnHeader': {
-                            fontWeight: '',
-                            fontSize: '19px',
-                            color: 'black'
+                        "& .MuiDataGrid-columnHeader": {
+                            fontSize: "19px",
+                            color: "black",
                         },
-                        '& .MuiDataGrid-cell': {
-                            display: 'flex',        // Make the cell a flex container
-                            justifyContent: 'start',  // Center horizontally
-                            alignItems: 'center',      // Center vertically
-                            fontSize: '16px',
-                            color: '#776b7f'
+                        "& .MuiDataGrid-cell": {
+                            fontSize: "16px",
+                            color: "#776b7f",
                         },
-
-
                     }}
                 />
-
             </div>
             {/* Pagination Controls */}
             <PaginationControls
-
                 currentPage={currentPage}
                 totalPages={totalPages}
                 pageS={pageSize}
                 setCurrentPage={setCurrentPage}
             />
-
         </div>
     );
 };
 
 export default ReusableDataTable;
-
