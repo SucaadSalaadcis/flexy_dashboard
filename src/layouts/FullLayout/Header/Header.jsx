@@ -21,16 +21,17 @@ import {
 import userimg from "../../../assets/images/users/user.jpg";
 
 
+
 const pathLink = [
   { pathname: '/dashboard', text: 'Dashboard', },
   { pathname: '/permission', text: 'Permission', post_path: '/' },
-  { pathname: '/country', text: 'Country', post_path: '/country_post' },
-  { pathname: '/state', text: 'State', post_path: '/state_post' },
-  { pathname: '/city', text: 'City', post_path: '/city_post' },
-  { pathname: '/branch', text: 'Branch', post_path: '/branch_post' },
-  { pathname: '/zone', text: 'Zone', post_path: '/zone_post' },
-  { pathname: '/site', text: 'Site', post_path: '/site_post' },
-  { pathname: '/user', text: 'User', post_path: '/user_post' },
+  { pathname: '/country', text: 'Country', post_path: '/country_post', view_path: '/view_country', edit_path: '/edit_country' },
+  { pathname: '/state', text: 'State', post_path: '/state_post', view_path: '/view_state', edit_path: '/edit_state' },
+  { pathname: '/city', text: 'City', post_path: '/city_post', view_path: '/view_city', edit_path: '/edit_city' },
+  { pathname: '/branch', text: 'Branch', post_path: '/branch_post', view_path: '/view_branch', edit_path: '/edit_branch' },
+  { pathname: '/zone', text: 'Zone', post_path: '/zone_post', view_path: '/view_zone', edit_path: '/edit_zone' },
+  { pathname: '/site', text: 'Site', post_path: '/site_post', view_path: '/view_site', edit_path: '/edit_site' },
+  { pathname: '/user', text: 'User', post_path: '/user_post', view_path: '/view_user', edit_path: '/edit_user' },
 ]
 
 import { Link, useLocation } from "react-router-dom";
@@ -80,15 +81,23 @@ const Header = (props) => {
           <MenuOutlinedIcon width="20" height="20" />
         </IconButton>
 
-        <Typography>{
-          pathLink.map(item => (
-            <div className="ml-10 md:ml-0">
-              <Typography sx={{ color: '#a41af4', fontSize: '25px' }}>
-                {(location.pathname === item.pathname || location.pathname === item.post_path) && item.text}
-              </Typography>
-            </div>
-          ))
-        }</Typography>
+        <Typography>
+          {
+            pathLink.map(item => (
+              <div className="ml-10 md:ml-0" key={item.pathname}>
+                <Typography sx={{ color: '#a41af4', fontSize: '25px' }}>
+                  {
+                    (location.pathname === item.pathname ||
+                      location.pathname === item.post_path ||
+                      (item.view_path && location.pathname.startsWith(item.view_path)) ||
+                      (item.edit_path && location.pathname.startsWith(item.edit_path))) && item.text
+
+                  }
+                </Typography>
+              </div>
+            ))
+          }
+        </Typography>
 
 
         <Box flexGrow={1} />

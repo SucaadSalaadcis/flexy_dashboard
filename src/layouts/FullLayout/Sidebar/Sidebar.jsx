@@ -68,7 +68,12 @@ const Sidebar = (props) => {
                   selected={pathDirect === item.href}
                   sx={{
                     mb: 1,
-                    ...(window.location.pathname === item.href || window.location.pathname === item.post_path) && {
+                    ...(window.location.pathname === item.href ||
+                      window.location.pathname === item.post_path ||
+                      window.location.pathname.startsWith(item.edit_path) ||
+                      window.location.pathname.startsWith(item.view_path)
+                    )
+                    && {
                       color: "white",
                       backgroundColor: (theme) => `${theme.palette.primary.main}!important`,
                     },
