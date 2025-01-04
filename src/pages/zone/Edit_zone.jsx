@@ -118,6 +118,12 @@ export default function Edit_zone() {
     // edit
     const handleUpdate = (e) => {
         e.preventDefault();
+        
+        if (!selectedBranch) {
+            toast.error('Please select Branch.');
+            return;
+        }
+
         axiosPublicURL().post(`api/zone/update`, {
             id,
             zone,
