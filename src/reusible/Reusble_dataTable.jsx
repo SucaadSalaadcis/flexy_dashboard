@@ -9,6 +9,8 @@ import Swal from "sweetalert2";
 import { IconButton } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import axiosPublicURL from "../views/hooks/AxiosHook";
+import { FaSearch } from 'react-icons/fa';
+
 
 const ReusableDataTable = ({ apiUrl, columns, deleteApi }) => {
     const [rows, setRows] = useState([]);
@@ -171,17 +173,16 @@ const ReusableDataTable = ({ apiUrl, columns, deleteApi }) => {
                 </div>
 
                 {/* Search Bar */}
-                <div>
-                    <label htmlFor="search" className="mr-2">
-                        Search:
-                    </label>
+                <div className="flex items-center px-2 py-1 border border-gray-300 rounded">
+
+                    <FaSearch className="text-gray-500" />
                     <input
                         id="search"
                         type="text"
                         value={searchQuery}
                         onChange={handleSearchChange}
                         placeholder="Search..."
-                        className="px-2 py-1 border border-gray-300 rounded"
+                        className="flex-1 px-2 py-1 ml-2 focus:outline-none"
                     />
                 </div>
 
