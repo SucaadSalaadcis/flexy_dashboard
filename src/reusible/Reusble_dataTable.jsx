@@ -1,5 +1,3 @@
-
-//
 import React, { useEffect, useState } from "react";
 import { DataGrid } from "@mui/x-data-grid";
 import Cookies from "js-cookie";
@@ -8,18 +6,18 @@ import { Add, Edit, View } from "./Add_Edit_View";
 import Swal from "sweetalert2";
 import { IconButton } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
-import axiosPublicURL from "../views/hooks/AxiosHook";
-import { FaSearch } from 'react-icons/fa';
 
+import axiosPublicURL from "../views/hooks/AxiosHook";
 
 const ReusableDataTable = ({ apiUrl, columns, deleteApi }) => {
     const [rows, setRows] = useState([]);
-    const [filteredRows, setFilteredRows] = useState([]);
     const [loading, setLoading] = useState(false);
     const [currentPage, setCurrentPage] = useState(1);
-    const [pageSize, setPageSize] = useState(10);
+    const [pageSize, setPageSize] = useState(10); // Default page size
     const [totalPages, setTotalPages] = useState(1);
-    const [searchQuery, setSearchQuery] = useState("");
+
+    const [searchQuery, setSearchQuery] = useState(""); // Search query state
+    const [filteredRows, setFilteredRows] = useState([]); // Filtered rows for search
 
     const getToken = () => Cookies.get("token");
 
@@ -40,13 +38,13 @@ const ReusableDataTable = ({ apiUrl, columns, deleteApi }) => {
 
             const data = response.data?.data || [];
             const meta = response.data?.meta || {};
-            const total = meta.total || data.length;
-            const lastPage = Math.ceil(total / pageSize);
+            const lastPage = Math.ceil(meta.total / pageSize); // Calculate total pages dynamically
+            const currentPage = meta.page || 1; // Correct page number in the response
 
-            setRows(data);
-            setFilteredRows(data);
             setTotalPages(lastPage);
-            setCurrentPage(page);
+            setCurrentPage(currentPage);
+            setRows(data);
+            setFilteredRows(data); // Initialize filtered rows
         } catch (error) {
             console.error("Error fetching data:", error);
         } finally {
@@ -54,11 +52,21 @@ const ReusableDataTable = ({ apiUrl, columns, deleteApi }) => {
         }
     };
 
-
     useEffect(() => {
         fetchData(currentPage, pageSize);
-    }, [currentPage, pageSize]);
+    }, [currentPage, apiUrl, pageSize]);
 
+    // Handle page size change
+    const handlePageSizeChange = (event) => {
+        const newPageSize = parseInt(event.target.value, 10);
+        setPageSize(newPageSize); // Update page size
+        setCurrentPage(1); // Reset to first page
+    };
+
+    // Handle page change
+    const handlePageChange = (newPage) => {
+        setCurrentPage(newPage);
+    };
 
     // Handle search query change
     const handleSearchChange = (event) => {
@@ -66,13 +74,13 @@ const ReusableDataTable = ({ apiUrl, columns, deleteApi }) => {
         setSearchQuery(query);
 
         if (query) {
-            const filtered = rows.filter((row) =>
-                /*   rows.filter((row) => ...): Loops through each row in the rows array and keeps only the rows that match the condition inside the filter() function.
-    Object.values(row): Converts the row object into an array of its values (e.g., for { id: 1, name: 'John' }, it becomes [1, 'John']).
-    .some((value) => ...): Checks if any value in the row matches the search query.
-    value.toString().toLowerCase().includes(query):
-    .includes(query): Checks if the value contains the search query. */
+            /*   rows.filter((row) => ...): Loops through each row in the rows array and keeps only the rows that match the condition inside the filter() function.
+      Object.values(row): Converts the row object into an array of its values (e.g., for { id: 1, name: 'John' }, it becomes [1, 'John']).
+      .some((value) => ...): Checks if any value in the row matches the search query.
+      value.toString().toLowerCase().includes(query):
+      .includes(query): Checks if the value contains the search query. */
 
+            const filtered = rows.filter((row) =>
                 Object.values(row).some(
                     (value) =>
                         value &&
@@ -81,20 +89,11 @@ const ReusableDataTable = ({ apiUrl, columns, deleteApi }) => {
             );
             setFilteredRows(filtered);
         } else {
-            setFilteredRows(rows);
+            setFilteredRows(rows); // Reset to original rows if search query is empty
         }
     };
 
-
-    // Handle page size change
-    const handlePageSizeChange = (event) => {
-        const newPageSize = parseInt(event.target.value, 10);
-        setPageSize(newPageSize);
-        setCurrentPage(1); // Reset to the first page
-    };
-
-
-    // Handle delete action
+    // delete data
     const handleDelete = (id) => {
         Swal.fire({
             title: "Are you sure?",
@@ -109,7 +108,7 @@ const ReusableDataTable = ({ apiUrl, columns, deleteApi }) => {
                 axiosPublicURL()
                     .post(
                         `api/${deleteApi}/delete/`,
-                        { id },
+                        { id }, // Send the id in the body
                         {
                             headers: {
                                 Authorization: `Bearer ${getToken()}`,
@@ -118,7 +117,7 @@ const ReusableDataTable = ({ apiUrl, columns, deleteApi }) => {
                         }
                     )
                     .then(() => {
-                        fetchData(currentPage, pageSize); // Refresh data after deletion
+                        fetchData();
                         Swal.fire("Deleted!", "Your data has been deleted.", "success");
                     })
                     .catch((error) => {
@@ -133,7 +132,6 @@ const ReusableDataTable = ({ apiUrl, columns, deleteApi }) => {
         });
     };
 
-
     // Add a custom action column
     const actionColumn = {
         field: "actions",
@@ -141,11 +139,17 @@ const ReusableDataTable = ({ apiUrl, columns, deleteApi }) => {
         width: 150,
         renderCell: (params) => (
             <>
-                <IconButton aria-label="delete" onClick={() => handleDelete(params.row.id)}>
+                <IconButton
+                    aria-label="delete"
+                    onClick={() => handleDelete(params.row.id)}
+                >
                     <DeleteIcon style={{ color: "#E53270" }} />
                 </IconButton>
+                {/* edit component */}
                 <Edit EditParam={params.row.id} />
-                <View viewParam={params.row.id} />
+
+                {/* edit view */}
+                <View veiwParam={params.row.id} />
             </>
         ),
     };
@@ -173,16 +177,17 @@ const ReusableDataTable = ({ apiUrl, columns, deleteApi }) => {
                 </div>
 
                 {/* Search Bar */}
-                <div className="flex items-center px-2 py-1 border border-gray-300 rounded">
-
-                    <FaSearch className="text-gray-500" />
+                <div>
+                    <label htmlFor="search" className="mr-2">
+                        Search:
+                    </label>
                     <input
                         id="search"
                         type="text"
                         value={searchQuery}
                         onChange={handleSearchChange}
                         placeholder="Search..."
-                        className="flex-1 px-2 py-1 ml-2 focus:outline-none"
+                        className="px-2 py-1 border border-gray-300 rounded"
                     />
                 </div>
 
@@ -190,30 +195,43 @@ const ReusableDataTable = ({ apiUrl, columns, deleteApi }) => {
             <div className="mb-3">
                 <Add />
             </div>
+            {/* Data Grid */}
             <div style={{ width: "100%" }}>
                 <DataGrid
-                    rows={filteredRows}
+                    rows={filteredRows} // Use filtered rows for display
                     columns={[...columns, actionColumn]}
                     loading={loading}
                     pagination={false}
                     hideFooter
                     disableSelectionOnClick
-                    getRowHeight={() => 70}
+                    getRowHeight={() => 70} // Increase row height to fit content
+                    getRowClassName={(params) =>
+                        `row-${params.row.id % 2 === 0 ? "even" : "odd"}`
+                    }
                     sx={{
+                        // Styles for even and odd rows
+                        "& .row-even": {
+                            backgroundColor: "#f9f9f9", // Light grey for even rows
+                        },
+                        "& .row-odd": {
+                            backgroundColor: "#ffffff", // White for odd rows
+                        },
                         "& .MuiDataGrid-columnHeader": {
-                            fontWeight: "bold",
-                            fontSize: "16px",
+                            fontSize: "19px",
+                            color: "black",
                         },
                         "& .MuiDataGrid-cell": {
-                            fontSize: "14px",
-                            color: "#555",
+                            fontSize: "16px",
+                            color: "#776b7f",
                         },
                     }}
                 />
             </div>
+            {/* Pagination Controls */}
             <PaginationControls
                 currentPage={currentPage}
                 totalPages={totalPages}
+                pageS={pageSize}
                 setCurrentPage={setCurrentPage}
             />
         </div>
@@ -221,4 +239,3 @@ const ReusableDataTable = ({ apiUrl, columns, deleteApi }) => {
 };
 
 export default ReusableDataTable;
-
