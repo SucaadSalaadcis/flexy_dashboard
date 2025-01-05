@@ -40,8 +40,10 @@ const ReusableDataTable = ({ apiUrl, columns, deleteApi }) => {
 
             const data = response.data?.data || [];
             const meta = response.data?.meta || {};
-            const lastPage = Math.ceil(meta.total / pageSize); // Calculate total pages dynamically
-            const currentPage = meta.page || 1; // Correct page number in the response
+            const lastPage = Math.ceil(meta.total / pageSize);
+            // const currentPage = meta.page || 1; // Correct page number in the response
+            const total = meta.total || data.length;
+            // const lastPage = Math.ceil(total / pageSize);
 
             setTotalPages(lastPage);
             setCurrentPage(currentPage);
@@ -156,8 +158,8 @@ const ReusableDataTable = ({ apiUrl, columns, deleteApi }) => {
         ),
     };
 
-      // Clear the search query
-      const handleClearSearch = () => {
+    // Clear the search query
+    const handleClearSearch = () => {
         setSearchQuery(""); // Clear the search query
         setFilteredRows(rows); // Reset to original rows when cleared
     };
@@ -194,7 +196,7 @@ const ReusableDataTable = ({ apiUrl, columns, deleteApi }) => {
                         type="text"
                         value={searchQuery}
                         onChange={handleSearchChange}
-                        placeholder={ 'Search...'}
+                        placeholder={'Search...'}
                         className={` transition-all duration-300 ease-in-out focus:w-64 focus:outline-none focus:ring-2 w-32 focus:ring-blue-500 px-3 py-2 pr-8 border border-gray-300 rounded`}
                     />
                     <div className="absolute inset-y-0 flex items-center right-2">
@@ -208,7 +210,7 @@ const ReusableDataTable = ({ apiUrl, columns, deleteApi }) => {
                         )}
                     </div>
                 </div>
-                
+
             </div>
             <div className="mb-3">
                 <Add />
