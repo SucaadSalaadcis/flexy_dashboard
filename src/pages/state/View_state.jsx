@@ -6,7 +6,7 @@ import toast from 'react-hot-toast';
 import BackIcon from '../../reusible/BackIcon';
 import axiosPublicURL from '../../views/hooks/AxiosHook';
 
-import Select from 'react-select';
+import { PacmanLoader } from 'react-spinners';
 
 export default function View_state() {
 
@@ -17,10 +17,12 @@ export default function View_state() {
 
     const getToken = () => Cookies.get('token');
 
+    const [loading, setLoading] = useState(false);
 
 
     // Function to fetch country data
     const handleSingleData = async () => {
+        setLoading(true);
         try {
             const response = await axiosPublicURL().post(
                 'api/state/get',
@@ -32,7 +34,7 @@ export default function View_state() {
                     },
                 }
             );
-
+            setLoading(false);
             // Extract data
             const staties = response.data?.data;
 
@@ -46,6 +48,7 @@ export default function View_state() {
                 toast.error('State not found.');
             }
         } catch (error) {
+            setLoading(false);
             console.error('Error fetching state data:', error);
             toast.error('An error occurred while fetching state data.');
         }
@@ -100,33 +103,44 @@ export default function View_state() {
                             >
                                 {/* Content page */}
                                 <Typography
-                                    sx={{ fontWeight: 'bold', marginBottom: '20px', textAlign: 'center' , fontSize: '22px'}}
+                                    sx={{ fontWeight: 'bold', marginBottom: '20px', textAlign: 'center', fontSize: '22px' }}
                                 >
                                     State View Form
                                 </Typography>
-                                <FormControl
-                                    variant="standard"
-                                    sx={{ margin: 1, width: '100%', gap: '10px' }}
-                                >
-                                    <label className='ml-1 text-2xl' htmlFor="">ID :</label>
-                                    <TextField
-                                        required
-                                        id="state-id"
-                                        // label="ID"
-                                        value={id}
-                                        sx={textFieldStyle}
-                                        disabled
-                                    />
-                                    <label className='ml-1 text-2xl' htmlFor="" >State Name :</label>
-                                    <TextField
-                                        required
-                                        id="state-name"
-                                        value={region}
-                                        sx={textFieldStyle}
-                                        disabled
-                                    />
-                                </FormControl>
-
+                                {
+                                    loading ? (
+                                        <div style={{ display: 'flex', justifyContent: 'center', marginTop: '5px' }}>
+                                            <PacmanLoader
+                                                speedMultiplier={3}
+                                                color="rgba(255, 255, 255, 0.7)" // Semi-transparent white color
+                                                loading={loading}
+                                                size={20}
+                                            />
+                                        </div>
+                                    ) : (
+                                        <FormControl
+                                            variant="standard"
+                                            sx={{ margin: 1, width: '100%', gap: '10px' }}
+                                        >
+                                            <label className='ml-1 text-2xl' htmlFor="">ID :</label>
+                                            <TextField
+                                                required
+                                                id="state-id"
+                                                // label="ID"
+                                                value={id}
+                                                sx={textFieldStyle}
+                                                disabled
+                                            />
+                                            <label className='ml-1 text-2xl' htmlFor="" >State Name :</label>
+                                            <TextField
+                                                required
+                                                id="state-name"
+                                                value={region}
+                                                sx={textFieldStyle}
+                                                disabled
+                                            />
+                                        </FormControl>
+                                    )}
                             </Box>
                         </div>
                     </div>

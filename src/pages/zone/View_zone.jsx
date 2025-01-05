@@ -6,6 +6,8 @@ import toast from 'react-hot-toast';
 import BackIcon from '../../reusible/BackIcon';
 import axiosPublicURL from '../../views/hooks/AxiosHook';
 
+import { PacmanLoader } from 'react-spinners';
+
 export default function View_zone() {
 
     const [id, setid] = useState('');
@@ -17,10 +19,11 @@ export default function View_zone() {
 
     const getToken = () => Cookies.get('token');
 
-
+    const [loading, setLoading] = useState(false);
 
 
     const handleSingleData = async () => {
+        setLoading(true);
         try {
             const response = await axiosPublicURL().post(
                 'api/zone/get',
@@ -32,14 +35,14 @@ export default function View_zone() {
                     },
                 }
             );
-
+            setLoading(false);
             // Extract data
             const zonies = response.data?.data;
 
             // Find the country by ID
             const zone = zonies?.find(item => item.id === parseInt(zoneId));
             console.log(zone);
-            
+
             if (zone) {
                 setZone(zone.zone || '');
                 setShort(zone.short || '');
@@ -48,6 +51,7 @@ export default function View_zone() {
                 toast.error('Zone not found.');
             }
         } catch (error) {
+            setLoading(false);
             console.error('Error fetching zone data:', error);
             toast.error('An error occurred while fetching zone data.');
         }
@@ -112,36 +116,48 @@ export default function View_zone() {
                                 >
                                     Zone View Form
                                 </Typography>
-                                <FormControl
-                                    variant="standard"
-                                    sx={{ margin: 1, width: '100%', gap: '10px' }}
-                                >
-                                    <label className='ml-1 text-2xl' htmlFor="">ID :</label>
-                                    <TextField
-                                        required
-                                        id="zone-id"
-                                        // label="ID"
-                                        value={id}
-                                        sx={textFieldStyle}
-                                        disabled
-                                    />
-                                    <label className='ml-1 text-2xl' htmlFor="" >Zone Name :</label>
-                                    <TextField
-                                        required
-                                        id="zone-name"
-                                        value={zone}
-                                        sx={textFieldStyle}
-                                        disabled
-                                    />
-                                    <label className='ml-1 text-2xl' htmlFor="" >Short :</label>
-                                    <TextField
-                                        required
-                                        id="short"
-                                        value={short}
-                                        sx={textFieldStyle}
-                                        disabled
-                                    />
-                                </FormControl>
+                                {
+                                    loading ? (
+                                        <div style={{ display: 'flex', justifyContent: 'center', marginTop: '5px' }}>
+                                            <PacmanLoader
+                                                speedMultiplier={3}
+                                                color="rgba(255, 255, 255, 0.7)" // Semi-transparent white color
+                                                loading={loading}
+                                                size={20}
+                                            />
+                                        </div>
+                                    ) : (
+                                        <FormControl
+                                            variant="standard"
+                                            sx={{ margin: 1, width: '100%', gap: '10px' }}
+                                        >
+                                            <label className='ml-1 text-2xl' htmlFor="">ID :</label>
+                                            <TextField
+                                                required
+                                                id="zone-id"
+                                                // label="ID"
+                                                value={id}
+                                                sx={textFieldStyle}
+                                                disabled
+                                            />
+                                            <label className='ml-1 text-2xl' htmlFor="" >Zone Name :</label>
+                                            <TextField
+                                                required
+                                                id="zone-name"
+                                                value={zone}
+                                                sx={textFieldStyle}
+                                                disabled
+                                            />
+                                            <label className='ml-1 text-2xl' htmlFor="" >Short :</label>
+                                            <TextField
+                                                required
+                                                id="short"
+                                                value={short}
+                                                sx={textFieldStyle}
+                                                disabled
+                                            />
+                                        </FormControl>
+                                    )}
                             </Box>
                         </div>
                     </div>

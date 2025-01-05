@@ -6,19 +6,23 @@ import toast from 'react-hot-toast';
 import BackIcon from '../../reusible/BackIcon';
 import axiosPublicURL from '../../views/hooks/AxiosHook';
 
+import { PacmanLoader } from 'react-spinners';
+
 export default function View_user() {
 
     const [id, setid] = useState('');
     const [fullname, setFullname] = useState('');
     const [user_email, setUser_email] = useState('');
- 
+
 
     const { userId } = useParams();
 
+    const [loading, setLoading] = useState(false);
 
     const getToken = () => Cookies.get('token');
 
     const handleSingleData = async () => {
+        setLoading(true);
         try {
             const response = await axiosPublicURL().post(
                 'api/users/get',
@@ -30,14 +34,14 @@ export default function View_user() {
                     },
                 }
             );
-
+            setLoading(false);
             // Extract data
             const users = response.data?.data;
 
             // Find the user by ID
             const user = users?.find(item => item.id === parseInt(userId));
             console.log(user);
-            
+
             if (user) {
                 setFullname(user.fullname || '');
                 setUser_email(user.user_email || '');
@@ -46,6 +50,7 @@ export default function View_user() {
                 toast.error('User not found.');
             }
         } catch (error) {
+            setLoading(false);
             console.error('Error fetching user data:', error);
             toast.error('An error occurred while fetching user data.');
         }
@@ -55,8 +60,6 @@ export default function View_user() {
     useEffect(() => {
         handleSingleData();
     }, []);
-
-
 
 
 
@@ -110,35 +113,47 @@ export default function View_user() {
                                 >
                                     User View Form
                                 </Typography>
-                                <FormControl
-                                    variant="standard"
-                                    sx={{ margin: 1, width: '100%', gap: '10px' }}
-                                >
-                                    <label className='ml-1 text-2xl' htmlFor="">ID :</label>
-                                    <TextField
-                                        required
-                                        id="user-id"
-                                        value={id}
-                                        sx={textFieldStyle}
-                                        disabled
-                                    />
-                                    <label className='ml-1 text-2xl' htmlFor="" >Full Name :</label>
-                                    <TextField
-                                        required
-                                        id="full-name"
-                                        value={fullname}
-                                        sx={textFieldStyle}
-                                        disabled
-                                    />
-                                    <label className='ml-1 text-2xl' htmlFor="" >Email :</label>
-                                    <TextField
-                                        required
-                                        id="email"
-                                        value={user_email}
-                                        sx={textFieldStyle}
-                                        disabled
-                                    />
-                                </FormControl>
+                                {
+                                    loading ? (
+                                        <div style={{ display: 'flex', justifyContent: 'center', marginTop: '5px' }}>
+                                            <PacmanLoader
+                                                speedMultiplier={3}
+                                                color="rgba(255, 255, 255, 0.7)" // Semi-transparent white color
+                                                loading={loading}
+                                                size={20}
+                                            />
+                                        </div>
+                                    ) : (
+                                        <FormControl
+                                            variant="standard"
+                                            sx={{ margin: 1, width: '100%', gap: '10px' }}
+                                        >
+                                            <label className='ml-1 text-2xl' htmlFor="">ID :</label>
+                                            <TextField
+                                                required
+                                                id="user-id"
+                                                value={id}
+                                                sx={textFieldStyle}
+                                                disabled
+                                            />
+                                            <label className='ml-1 text-2xl' htmlFor="" >Full Name :</label>
+                                            <TextField
+                                                required
+                                                id="full-name"
+                                                value={fullname}
+                                                sx={textFieldStyle}
+                                                disabled
+                                            />
+                                            <label className='ml-1 text-2xl' htmlFor="" >Email :</label>
+                                            <TextField
+                                                required
+                                                id="email"
+                                                value={user_email}
+                                                sx={textFieldStyle}
+                                                disabled
+                                            />
+                                        </FormControl>
+                                    )}
                             </Box>
                         </div>
                     </div>

@@ -6,6 +6,8 @@ import toast from 'react-hot-toast';
 import BackIcon from '../../reusible/BackIcon';
 import axiosPublicURL from '../../views/hooks/AxiosHook';
 
+import { PacmanLoader } from 'react-spinners';
+
 export default function View_site() {
 
     const [id, setid] = useState('');
@@ -18,9 +20,11 @@ export default function View_site() {
     const getToken = () => Cookies.get('token');
 
 
+    const [loading, setLoading] = useState(false);
 
 
     const handleSingleData = async () => {
+        setLoading(true);
         try {
             const response = await axiosPublicURL().post(
                 'api/site/get',
@@ -32,14 +36,14 @@ export default function View_site() {
                     },
                 }
             );
-
+            setLoading(false);
             // Extract data
             const sities = response.data?.data;
 
             // Find the country by ID
             const site = sities?.find(item => item.id === parseInt(siteId));
             console.log(site);
-            
+
             if (site) {
                 setSite(site.site || '');
                 setShort(site.short || '');
@@ -48,6 +52,7 @@ export default function View_site() {
                 toast.error('Site not found.');
             }
         } catch (error) {
+            setLoading(false);
             console.error('Error fetching site data:', error);
             toast.error('An error occurred while fetching site data.');
         }
@@ -57,8 +62,6 @@ export default function View_site() {
     useEffect(() => {
         handleSingleData();
     }, []);
-
-
 
 
 
@@ -112,36 +115,48 @@ export default function View_site() {
                                 >
                                     Site View Form
                                 </Typography>
-                                <FormControl
-                                    variant="standard"
-                                    sx={{ margin: 1, width: '100%', gap: '10px' }}
-                                >
-                                    <label className='ml-1 text-2xl' htmlFor="">ID :</label>
-                                    <TextField
-                                        required
-                                        id="zone-id"
-                                        // label="ID"
-                                        value={id}
-                                        sx={textFieldStyle}
-                                        disabled
-                                    />
-                                    <label className='ml-1 text-2xl' htmlFor="" >Site Name :</label>
-                                    <TextField
-                                        required
-                                        id="site-name"
-                                        value={site}
-                                        sx={textFieldStyle}
-                                        disabled
-                                    />
-                                    <label className='ml-1 text-2xl' htmlFor="" >Short :</label>
-                                    <TextField
-                                        required
-                                        id="short"
-                                        value={short}
-                                        sx={textFieldStyle}
-                                        disabled
-                                    />
-                                </FormControl>
+                                {
+                                    loading ? (
+                                        <div style={{ display: 'flex', justifyContent: 'center', marginTop: '5px' }}>
+                                            <PacmanLoader
+                                                speedMultiplier={3}
+                                                color="rgba(255, 255, 255, 0.7)" // Semi-transparent white color
+                                                loading={loading}
+                                                size={20}
+                                            />
+                                        </div>
+                                    ) : (
+                                        <FormControl
+                                            variant="standard"
+                                            sx={{ margin: 1, width: '100%', gap: '10px' }}
+                                        >
+                                            <label className='ml-1 text-2xl' htmlFor="">ID :</label>
+                                            <TextField
+                                                required
+                                                id="zone-id"
+                                                // label="ID"
+                                                value={id}
+                                                sx={textFieldStyle}
+                                                disabled
+                                            />
+                                            <label className='ml-1 text-2xl' htmlFor="" >Site Name :</label>
+                                            <TextField
+                                                required
+                                                id="site-name"
+                                                value={site}
+                                                sx={textFieldStyle}
+                                                disabled
+                                            />
+                                            <label className='ml-1 text-2xl' htmlFor="" >Short :</label>
+                                            <TextField
+                                                required
+                                                id="short"
+                                                value={short}
+                                                sx={textFieldStyle}
+                                                disabled
+                                            />
+                                        </FormControl>
+                                    )}
                             </Box>
                         </div>
                     </div>

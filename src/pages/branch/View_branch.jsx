@@ -12,6 +12,8 @@ import BackIcon from '../../reusible/BackIcon';
 
 import axiosPublicURL from '../../views/hooks/AxiosHook'
 
+import { PacmanLoader } from 'react-spinners';
+
 export default function View_branch() {
 
     const getToken = () => {
@@ -30,8 +32,11 @@ export default function View_branch() {
 
     const { branchId } = useParams();
 
+    const [loading, setLoading] = useState(false);
+
 
     const handleSingleData = async () => {
+        setLoading(true);
         try {
             const response = await axiosPublicURL().post(
                 'api/branch/get',
@@ -43,7 +48,7 @@ export default function View_branch() {
                     },
                 }
             );
-
+            setLoading(false);
             // Extract data
             const branches = response.data?.data;
             console.log(branches);
@@ -65,6 +70,7 @@ export default function View_branch() {
                 toast.error('Zone not found.');
             }
         } catch (error) {
+            setLoading(false);
             console.error('Error fetching branch data:', error);
             toast.error('An error occurred while fetching branch data.');
         }
@@ -125,103 +131,115 @@ export default function View_branch() {
                                 >
                                     Branch View Form
                                 </Typography>
-                                <FormControl
-                                    variant="standard"
-                                    sx={{ margin: 1, width: '100%', gap: '10px' }}
-                                >
-                                    {/* Input for id */}
-                                    <label className='ml-1 text-2xl' htmlFor="" >ID :</label>
-                                    <TextField
-                                        required
-                                        id="id"
-                                        value={id}
-                                        sx={textFieldStyle}
-                                        disabled
-                                    />
-                                    {/* Input for branch name */}
-                                    <label className='ml-1 text-2xl' htmlFor="" >Branch Name :</label>
-                                    <TextField
-                                        required
-                                        id="branch-name"
-                                        value={branch}
-                                        sx={textFieldStyle}
-                                        disabled
-                                    />
-                                    {/* Input for short  */}
-                                    <label className='ml-1 text-2xl' htmlFor="" >Short :</label>
-                                    <TextField
-                                        required
-                                        id="short"
-                                        value={short}
-                                        sx={textFieldStyle}
-                                        disabled
-                                    />
-                                    {/* Input for location  */}
-                                    <label className='ml-1 text-2xl' htmlFor="" >Location :</label>
-                                    <TextField
-                                        required
-                                        id="location"
-                                        value={location}
-                                        sx={textFieldStyle}
-                                        disabled
-                                    />
-                                    {/* Input for mail  */}
-                                    <label className='ml-1 text-2xl' htmlFor="" >Email :</label>
-                                    <TextField
-                                        required
-                                        id="email"
-                                        value={mail}
-                                        sx={textFieldStyle}
-                                        disabled
-                                    />
-                                    {/* Input for number */}
-                                    <label className='ml-1 text-2xl' htmlFor="" >Number :</label>
-                                    <TextField
-                                        required
-                                        id="number"
-                                        value={number}
-                                        sx={textFieldStyle}
-                                        disabled
-                                    />
-                                    {/* Input for term */}
-                                    <label className='ml-1 text-2xl' htmlFor="" >Term :</label>
-                                    <TextField
-                                        required
-                                        id="term"
-                                        value={term}
-                                        sx={textFieldStyle}
-                                        disabled
-                                    />
+                                {
+                                    loading ? (
+                                        <div style={{ display: 'flex', justifyContent: 'center', marginTop: '5px' }}>
+                                            <PacmanLoader
+                                                speedMultiplier={3}
+                                                color="rgba(255, 255, 255, 0.7)" // Semi-transparent white color
+                                                loading={loading}
+                                                size={20}
+                                            />
+                                        </div>
+                                    ) : (
+                                        <FormControl
+                                            variant="standard"
+                                            sx={{ margin: 1, width: '100%', gap: '10px' }}
+                                        >
+                                            {/* Input for id */}
+                                            <label className='ml-1 text-2xl' htmlFor="" >ID :</label>
+                                            <TextField
+                                                required
+                                                id="id"
+                                                value={id}
+                                                sx={textFieldStyle}
+                                                disabled
+                                            />
+                                            {/* Input for branch name */}
+                                            <label className='ml-1 text-2xl' htmlFor="" >Branch Name :</label>
+                                            <TextField
+                                                required
+                                                id="branch-name"
+                                                value={branch}
+                                                sx={textFieldStyle}
+                                                disabled
+                                            />
+                                            {/* Input for short  */}
+                                            <label className='ml-1 text-2xl' htmlFor="" >Short :</label>
+                                            <TextField
+                                                required
+                                                id="short"
+                                                value={short}
+                                                sx={textFieldStyle}
+                                                disabled
+                                            />
+                                            {/* Input for location  */}
+                                            <label className='ml-1 text-2xl' htmlFor="" >Location :</label>
+                                            <TextField
+                                                required
+                                                id="location"
+                                                value={location}
+                                                sx={textFieldStyle}
+                                                disabled
+                                            />
+                                            {/* Input for mail  */}
+                                            <label className='ml-1 text-2xl' htmlFor="" >Email :</label>
+                                            <TextField
+                                                required
+                                                id="email"
+                                                value={mail}
+                                                sx={textFieldStyle}
+                                                disabled
+                                            />
+                                            {/* Input for number */}
+                                            <label className='ml-1 text-2xl' htmlFor="" >Number :</label>
+                                            <TextField
+                                                required
+                                                id="number"
+                                                value={number}
+                                                sx={textFieldStyle}
+                                                disabled
+                                            />
+                                            {/* Input for term */}
+                                            <label className='ml-1 text-2xl' htmlFor="" >Term :</label>
+                                            <TextField
+                                                required
+                                                id="term"
+                                                value={term}
+                                                sx={textFieldStyle}
+                                                disabled
+                                            />
 
-                                    {/* Input for remark  */}
-                                    <label className='ml-1 text-2xl' htmlFor="" >Remark :</label>
-                                    <TextField
-                                        required
-                                        id="remark"
-                                        value={remark}
-                                        sx={textFieldStyle}
-                                        disabled
-                                    />
-                                    {/* Input for biller  */}
-                                    <label className='ml-1 text-2xl' htmlFor="" >Biller :</label>
-                                    <TextField
-                                        required
-                                        id="outlined-required"
-                                        value={biller}
-                                        sx={textFieldStyle}
-                                        disabled
-                                    />
-                                    {/* Input for land  */}
-                                    <label className='ml-1 text-2xl' htmlFor="" >Land :</label>
-                                    <TextField
-                                        required
-                                        id="land"
-                                        value={land}
-                                        sx={textFieldStyle}
-                                        disabled
-                                    />
+                                            {/* Input for remark  */}
+                                            <label className='ml-1 text-2xl' htmlFor="" >Remark :</label>
+                                            <TextField
+                                                required
+                                                id="remark"
+                                                value={remark}
+                                                sx={textFieldStyle}
+                                                disabled
+                                            />
+                                            {/* Input for biller  */}
+                                            <label className='ml-1 text-2xl' htmlFor="" >Biller :</label>
+                                            <TextField
+                                                required
+                                                id="outlined-required"
+                                                value={biller}
+                                                sx={textFieldStyle}
+                                                disabled
+                                            />
+                                            {/* Input for land  */}
+                                            <label className='ml-1 text-2xl' htmlFor="" >Land :</label>
+                                            <TextField
+                                                required
+                                                id="land"
+                                                value={land}
+                                                sx={textFieldStyle}
+                                                disabled
+                                            />
 
-                                </FormControl>
+                                        </FormControl>
+                                    )}
                             </Box>
                         </div>
                     </div>
