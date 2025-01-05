@@ -13,6 +13,8 @@ import BackIcon from '../../reusible/BackIcon';
 
 import axiosPublicURL from '../../views/hooks/AxiosHook'
 
+import { PacmanLoader } from 'react-spinners';
+
 export default function Edit_branch() {
 
     const getToken = () => {
@@ -40,9 +42,11 @@ export default function Edit_branch() {
 
     const navigate = useNavigate();
 
+    const [loading, setLoading] = useState(false);
 
 
     const handleSingleData = async () => {
+        setLoading(true);
         try {
             const response = await axiosPublicURL().post(
                 'api/branch/get',
@@ -54,7 +58,7 @@ export default function Edit_branch() {
                     },
                 }
             );
-
+            setLoading(false);
             // Extract data
             const branches = response.data?.data;
             console.log(branches);
@@ -89,6 +93,7 @@ export default function Edit_branch() {
                 toast.error('Branch not found.');
             }
         } catch (error) {
+            setLoading(false);
             console.error('Error fetching branch data:', error);
             toast.error('An error occurred while fetching branch data.');
         }
@@ -148,7 +153,7 @@ export default function Edit_branch() {
     // edit
     const handleUpdate = (e) => {
         e.preventDefault();
-        
+
         if (!selectedState && !selectedCity) {
             toast.error('Please select a State or City.');
             return;
@@ -205,109 +210,117 @@ export default function Edit_branch() {
                                 >
                                     Branch Edit Form
                                 </Typography>
-                                <FormControl
-                                    variant="standard"
-                                    sx={{ margin: 1, width: '100%', gap: '10px' }}
-                                >
-                                    {/* Input for id */}
-                                    <TextField
-                                        required
-                                        id="outlined-required"
-                                        label="ID"
-                                        value={id}
-                                        onChange={(e) => setid(e.target.value)}
-                                    />
-                                    {/* Input for branch name */}
-                                    <TextField
-                                        required
-                                        id="outlined-required"
-                                        label="Branch Name"
-                                        value={branch}
-                                        onChange={(e) => setBranch(e.target.value)}
-                                    />
-                                    {/* Input for short  */}
-                                    <TextField
-                                        required
-                                        id="outlined-required"
-                                        label="Short"
-                                        value={short}
-                                        onChange={(e) => setShort(e.target.value)}
-                                    />
-                                    {/* Input for location  */}
-                                    <TextField
-                                        required
-                                        id="outlined-required"
-                                        label="Location "
-                                        value={location}
-                                        onChange={(e) => setLocation(e.target.value)}
-                                    />
-                                    {/* Input for mail  */}
-                                    <TextField
-                                        required
-                                        id="outlined-required"
-                                        label="Mail "
-                                        value={mail}
-                                        onChange={(e) => setMail(e.target.value)}
-                                    />
-                                    {/* Input for number */}
-                                    <TextField
-                                        required
-                                        id="outlined-required"
-                                        label="Number"
-                                        value={number}
-                                        onChange={(e) => setNumber(e.target.value)}
-                                    />
-                                    {/* Input for term  */}
-                                    <TextField
-                                        required
-                                        id="outlined-required"
-                                        label="Term"
-                                        value={term}
-                                        onChange={(e) => setTerm(e.target.value)}
-                                    />
-                                    {/* Input for remark  */}
-                                    <TextField
-                                        required
-                                        id="outlined-required"
-                                        label="Remark"
-                                        value={remark}
-                                        onChange={(e) => setRemark(e.target.value)}
-                                    />
-                                    {/* Input for biller  */}
-                                    <TextField
-                                        required
-                                        id="outlined-required"
-                                        label="Biller"
-                                        value={biller}
-                                        onChange={(e) => setBiller(e.target.value)}
-                                    />
-                                    {/* Input for land  */}
-                                    <TextField
-                                        required
-                                        id="outlined-required"
-                                        label="Land"
-                                        value={land}
-                                        onChange={(e) => setLand(e.target.value)}
-                                    />
-                                    <Select
-                                        options={getCity}
-                                        value={cityId} // Selected value
-                                        onChange={(selected) => {
-                                            setCityId(selected); // Update selected country in state
-                                            setSelectedCity(selected); // Optionally update additional state
-                                        }}
-                                        placeholder="Select City ID"
-                                    />
-                                    <Select
-                                        options={getState}
-                                        value={stateId} // Selected value (single object with `value` and `label`)
-                                        onChange={(selected) => {
-                                            setStateId(selected); // Update selected country in state
-                                            setSelectedState(selected); // Optionally update additional state
-                                        }}
-                                        placeholder="Select State ID"
-                                    />
-                                </FormControl>
+                                {
+                                    loading ? (
+                                        <div style={{ display: 'flex', justifyContent: 'center', marginTop: '5px' }}>
+                                            <PacmanLoader
+                                                speedMultiplier={3} color='#a41af4' loading={loading} size={20} />
+                                        </div>
+                                    ) : (
+                                        <FormControl
+                                            variant="standard"
+                                            sx={{ margin: 1, width: '100%', gap: '10px' }}
+                                        >
+                                            {/* Input for id */}
+                                            <TextField
+                                                required
+                                                id="outlined-required"
+                                                label="ID"
+                                                value={id}
+                                                onChange={(e) => setid(e.target.value)}
+                                            />
+                                            {/* Input for branch name */}
+                                            <TextField
+                                                required
+                                                id="outlined-required"
+                                                label="Branch Name"
+                                                value={branch}
+                                                onChange={(e) => setBranch(e.target.value)}
+                                            />
+                                            {/* Input for short  */}
+                                            <TextField
+                                                required
+                                                id="outlined-required"
+                                                label="Short"
+                                                value={short}
+                                                onChange={(e) => setShort(e.target.value)}
+                                            />
+                                            {/* Input for location  */}
+                                            <TextField
+                                                required
+                                                id="outlined-required"
+                                                label="Location "
+                                                value={location}
+                                                onChange={(e) => setLocation(e.target.value)}
+                                            />
+                                            {/* Input for mail  */}
+                                            <TextField
+                                                required
+                                                id="outlined-required"
+                                                label="Mail "
+                                                value={mail}
+                                                onChange={(e) => setMail(e.target.value)}
+                                            />
+                                            {/* Input for number */}
+                                            <TextField
+                                                required
+                                                id="outlined-required"
+                                                label="Number"
+                                                value={number}
+                                                onChange={(e) => setNumber(e.target.value)}
+                                            />
+                                            {/* Input for term  */}
+                                            <TextField
+                                                required
+                                                id="outlined-required"
+                                                label="Term"
+                                                value={term}
+                                                onChange={(e) => setTerm(e.target.value)}
+                                            />
+                                            {/* Input for remark  */}
+                                            <TextField
+                                                required
+                                                id="outlined-required"
+                                                label="Remark"
+                                                value={remark}
+                                                onChange={(e) => setRemark(e.target.value)}
+                                            />
+                                            {/* Input for biller  */}
+                                            <TextField
+                                                required
+                                                id="outlined-required"
+                                                label="Biller"
+                                                value={biller}
+                                                onChange={(e) => setBiller(e.target.value)}
+                                            />
+                                            {/* Input for land  */}
+                                            <TextField
+                                                required
+                                                id="outlined-required"
+                                                label="Land"
+                                                value={land}
+                                                onChange={(e) => setLand(e.target.value)}
+                                            />
+                                            <Select
+                                                options={getCity}
+                                                value={cityId} // Selected value
+                                                onChange={(selected) => {
+                                                    setCityId(selected); // Update selected country in state
+                                                    setSelectedCity(selected); // Optionally update additional state
+                                                }}
+                                                placeholder="Select City ID"
+                                            />
+                                            <Select
+                                                options={getState}
+                                                value={stateId} // Selected value (single object with `value` and `label`)
+                                                onChange={(selected) => {
+                                                    setStateId(selected); // Update selected country in state
+                                                    setSelectedState(selected); // Optionally update additional state
+                                                }}
+                                                placeholder="Select State ID"
+                                            />
+                                        </FormControl>
+                                    )}
                                 <Box display="flex" justifyContent="flex-end" mt={2}>
                                     <Button variant="contained"
                                         startIcon={<EditIcon />}

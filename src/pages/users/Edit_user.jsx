@@ -13,6 +13,8 @@ import BackIcon from '../../reusible/BackIcon';
 
 import axiosPublicURL from '../../views/hooks/AxiosHook'
 
+import { PacmanLoader } from 'react-spinners';
+
 export default function Edit_user() {
 
   const getToken = () => {
@@ -37,8 +39,11 @@ export default function Edit_user() {
 
   const navigate = useNavigate();
 
+  const [loading, setLoading] = useState(false);
+
 
   const handleSingleData = async () => {
+    setLoading(true);
     try {
       const response = await axiosPublicURL().post(
         'api/users/get',
@@ -50,7 +55,7 @@ export default function Edit_user() {
           },
         }
       );
-
+      setLoading(false);
       // Extract data
       const users = response.data?.data;
       // console.log(users);
@@ -98,6 +103,7 @@ export default function Edit_user() {
         toast.error('User not found.');
       }
     } catch (error) {
+      setLoading(false);
       console.error('Error fetching user data:', error);
       toast.error('An error occurred while fetching user data.');
     }
@@ -219,71 +225,79 @@ export default function Edit_user() {
                 >
                   User Edit Form
                 </Typography>
-                <FormControl
-                  variant="standard"
-                  sx={{ margin: 1, width: '100%', gap: '10px' }}
-                >
-                  {/* Input for id */}
-                  <TextField
-                    required
-                    id="outlined-required"
-                    label="ID"
-                    value={id}
-                    onChange={(e) => setid(e.target.value)}
-                  />
-                  {/* Input for user name */}
-                  <TextField
-                    required
-                    id="outlined-required"
-                    label="Full Name"
-                    value={fullname}
-                    onChange={(e) => setFullname(e.target.value)}
-                  />
-                  {/* Input for email */}
-                  <TextField
-                    required
-                    id="outlined-required"
-                    label="Email"
-                    value={user_email}
-                    onChange={(e) => setUser_email(e.target.value)}
-                  />
-                  {/* Input for pass */}
-                  <TextField
-                    required
-                    id="outlined-required"
-                    label="Password"
-                    value={user_password}
-                    onChange={(e) => setUser_password(e.target.value)}
-                  />
-                  {/* Input for role 1/2 */}
-                  <TextField
-                    required
-                    id="outlined-required"
-                    label="Role 1: admin 2: supper_admin"
-                    value={roles}
-                    onChange={(e) => setRoles(e.target.value)}
-                  />
+                {
+                  loading ? (
+                    <div style={{ display: 'flex', justifyContent: 'center', marginTop: '5px' }}>
+                      <PacmanLoader
+                        speedMultiplier={3} color='#a41af4' loading={loading} size={20} />
+                    </div>
+                  ) : (
+                    <FormControl
+                      variant="standard"
+                      sx={{ margin: 1, width: '100%', gap: '10px' }}
+                    >
+                      {/* Input for id */}
+                      <TextField
+                        required
+                        id="outlined-required"
+                        label="ID"
+                        value={id}
+                        onChange={(e) => setid(e.target.value)}
+                      />
+                      {/* Input for user name */}
+                      <TextField
+                        required
+                        id="outlined-required"
+                        label="Full Name"
+                        value={fullname}
+                        onChange={(e) => setFullname(e.target.value)}
+                      />
+                      {/* Input for email */}
+                      <TextField
+                        required
+                        id="outlined-required"
+                        label="Email"
+                        value={user_email}
+                        onChange={(e) => setUser_email(e.target.value)}
+                      />
+                      {/* Input for pass */}
+                      <TextField
+                        required
+                        id="outlined-required"
+                        label="Password"
+                        value={user_password}
+                        onChange={(e) => setUser_password(e.target.value)}
+                      />
+                      {/* Input for role 1/2 */}
+                      <TextField
+                        required
+                        id="outlined-required"
+                        label="Role 1: admin 2: supper_admin"
+                        value={roles}
+                        onChange={(e) => setRoles(e.target.value)}
+                      />
 
-                  <Select
-                    options={getBranch}
-                    value={branchId} // Selected value (single object with `value` and `label`)
-                    onChange={(selected) => {
-                      setBranchId(selected); // Update selected country in state
-                      setSelectedBranch(selected); // Optionally update additional state
-                    }}
-                    placeholder="Select Branch ID"
-                  />
-                  <Select
-                    options={getZone}
-                    value={zoneId} // Selected value (single object with `value` and `label`)
-                    onChange={(selected) => {
-                      setZoneId(selected); // Update selected country in state
-                      setSelectedZone(selected); // Optionally update additional state
-                    }}
-                    placeholder="Select Zone ID"
-                  />
+                      <Select
+                        options={getBranch}
+                        value={branchId} // Selected value (single object with `value` and `label`)
+                        onChange={(selected) => {
+                          setBranchId(selected); // Update selected country in state
+                          setSelectedBranch(selected); // Optionally update additional state
+                        }}
+                        placeholder="Select Branch ID"
+                      />
+                      <Select
+                        options={getZone}
+                        value={zoneId} // Selected value (single object with `value` and `label`)
+                        onChange={(selected) => {
+                          setZoneId(selected); // Update selected country in state
+                          setSelectedZone(selected); // Optionally update additional state
+                        }}
+                        placeholder="Select Zone ID"
+                      />
 
-                </FormControl>
+                    </FormControl>
+                  )}
                 <Box display="flex" justifyContent="flex-end" mt={2}>
                   <Button variant="contained"
                     startIcon={<EditIcon />}

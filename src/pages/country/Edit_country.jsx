@@ -11,6 +11,8 @@ import BackIcon from '../../reusible/BackIcon';
 
 import axiosPublicURL from '../../views/hooks/AxiosHook'
 
+import { PacmanLoader } from 'react-spinners';
+
 export default function Edit_country() {
 
     const getToken = () => {
@@ -22,10 +24,13 @@ export default function Edit_country() {
     const { countryId } = useParams();
     const navigate = useNavigate();
 
+    const [loading, setLoading] = useState(false);
+
 
 
     // Function to fetch country data
     const handleSingleData = async () => {
+        setLoading(true);
         try {
             const response = await axiosPublicURL().post(
                 'api/country/get',
@@ -37,7 +42,7 @@ export default function Edit_country() {
                     },
                 }
             );
-
+            setLoading(false);
             // Extract data
             const countries = response.data?.data;
             console.log(countries)
@@ -51,6 +56,7 @@ export default function Edit_country() {
                 toast.error('Country not found.');
             }
         } catch (error) {
+            setLoading(false);
             console.error('Error fetching country data:', error);
             toast.error('An error occurred while fetching country data.');
         }
@@ -97,23 +103,31 @@ export default function Edit_country() {
                             <Paper elevation={3} style={{ padding: '71px', borderRadius: '8px', boxShadow: '0 4px 6px rgba(164, 26, 244, 0.5)' }}>
                                 {/* content page */}
                                 <Typography sx={{ fontWeight: 'bold', marginBottom: '20px', textAlign: 'center' }}>Country Edit Form</Typography>
-                                <FormControl variant="standard" sx={{ margin: 1, width: "100%", gap: '10px' }} >
-                                    <TextField
-                                        required
-                                        id="outlined-required"
-                                        label="ID"
-                                        value={id}
-                                        onChange={(e) => setid(e.target.value)}
-                                    />
-                                    <TextField
-                                        required
-                                        id="outlined-required"
-                                        label="Country Name"
-                                        value={country_name}
-                                        onChange={(e) => setCountry_name(e.target.value)}
-                                    />
+                                {
+                                    loading ? (
+                                        <div style={{ display: 'flex', justifyContent: 'center', marginTop: '5px' }}>
+                                            <PacmanLoader
+                                                speedMultiplier={3} color='#a41af4' loading={loading} size={20} />
+                                        </div>
+                                    ) : (
+                                        <FormControl variant="standard" sx={{ margin: 1, width: "100%", gap: '10px' }} >
+                                            <TextField
+                                                required
+                                                id="outlined-required"
+                                                label="ID"
+                                                value={id}
+                                                onChange={(e) => setid(e.target.value)}
+                                            />
+                                            <TextField
+                                                required
+                                                id="outlined-required"
+                                                label="Country Name"
+                                                value={country_name}
+                                                onChange={(e) => setCountry_name(e.target.value)}
+                                            />
 
-                                </FormControl>
+                                        </FormControl>
+                                    )}
                                 <Box display="flex" justifyContent="flex-end" mt={2}>
                                     <Button variant="contained"
                                         startIcon={<EditIcon />}

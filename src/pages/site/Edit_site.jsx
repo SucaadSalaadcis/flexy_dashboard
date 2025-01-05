@@ -13,6 +13,8 @@ import BackIcon from '../../reusible/BackIcon';
 
 import axiosPublicURL from '../../views/hooks/AxiosHook'
 
+import { PacmanLoader } from 'react-spinners';
+
 export default function Edit_site() {
 
     const getToken = () => {
@@ -35,9 +37,11 @@ export default function Edit_site() {
 
     const navigate = useNavigate();
 
+    const [loading, setLoading] = useState(false);
 
 
     const handleSingleData = async () => {
+        setLoading(true);
         try {
             const response = await axiosPublicURL().post(
                 'api/site/get',
@@ -49,7 +53,7 @@ export default function Edit_site() {
                     },
                 }
             );
-
+            setLoading(false);
             // Extract data
             const sities = response.data?.data;
 
@@ -78,6 +82,7 @@ export default function Edit_site() {
                 toast.error('Site not found.');
             }
         } catch (error) {
+            setLoading(false);
             console.error('Error fetching site data:', error);
             toast.error('An error occurred while fetching site data.');
         }
@@ -185,55 +190,63 @@ export default function Edit_site() {
                                 >
                                     Site Edit Form
                                 </Typography>
-                                <FormControl
-                                    variant="standard"
-                                    sx={{ margin: 1, width: '100%', gap: '10px' }}
-                                >
-                                    {/* Input for id */}
-                                    <TextField
-                                        required
-                                        id="outlined-required"
-                                        label="ID"
-                                        value={id}
-                                        onChange={(e) => setid(e.target.value)}
-                                    />
-                                    {/* Input for site name */}
-                                    <TextField
-                                        required
-                                        id="outlined-required"
-                                        label="Site Name"
-                                        value={site}
-                                        onChange={(e) => setSite(e.target.value)}
-                                    />
-                                    {/* Input for short */}
-                                    <TextField
-                                        required
-                                        id="outlined-required"
-                                        label="Short"
-                                        value={short}
-                                        onChange={(e) => setShort(e.target.value)}
-                                    />
+                                {
+                                    loading ? (
+                                        <div style={{ display: 'flex', justifyContent: 'center', marginTop: '5px' }}>
+                                            <PacmanLoader
+                                                speedMultiplier={3} color='#a41af4' loading={loading} size={20} />
+                                        </div>
+                                    ) : (
+                                        <FormControl
+                                            variant="standard"
+                                            sx={{ margin: 1, width: '100%', gap: '10px' }}
+                                        >
+                                            {/* Input for id */}
+                                            <TextField
+                                                required
+                                                id="outlined-required"
+                                                label="ID"
+                                                value={id}
+                                                onChange={(e) => setid(e.target.value)}
+                                            />
+                                            {/* Input for site name */}
+                                            <TextField
+                                                required
+                                                id="outlined-required"
+                                                label="Site Name"
+                                                value={site}
+                                                onChange={(e) => setSite(e.target.value)}
+                                            />
+                                            {/* Input for short */}
+                                            <TextField
+                                                required
+                                                id="outlined-required"
+                                                label="Short"
+                                                value={short}
+                                                onChange={(e) => setShort(e.target.value)}
+                                            />
 
-                                    {/* Dropdown for selecting */}
-                                    <Select
-                                        options={getBranch}
-                                        value={branchId} // Selected value (single object with `value` and `label`)
-                                        onChange={(selected) => {
-                                            setBranchId(selected); // Update selected country in state
-                                            setSelectedBranch(selected); // Optionally update additional state
-                                        }}
-                                        placeholder="Select Branch ID"
-                                    />
-                                    <Select
-                                        options={getZone}
-                                        value={zoneId} // Selected value (single object with `value` and `label`)
-                                        onChange={(selected) => {
-                                            setZoneId(selected); // Update selected country in state
-                                            setSelectedZone(selected); // Optionally update additional state
-                                        }}
-                                        placeholder="Select Zone ID"
-                                    />
-                                </FormControl>
+                                            {/* Dropdown for selecting */}
+                                            <Select
+                                                options={getBranch}
+                                                value={branchId} // Selected value (single object with `value` and `label`)
+                                                onChange={(selected) => {
+                                                    setBranchId(selected); // Update selected country in state
+                                                    setSelectedBranch(selected); // Optionally update additional state
+                                                }}
+                                                placeholder="Select Branch ID"
+                                            />
+                                            <Select
+                                                options={getZone}
+                                                value={zoneId} // Selected value (single object with `value` and `label`)
+                                                onChange={(selected) => {
+                                                    setZoneId(selected); // Update selected country in state
+                                                    setSelectedZone(selected); // Optionally update additional state
+                                                }}
+                                                placeholder="Select Zone ID"
+                                            />
+                                        </FormControl>
+                                    )}
                                 <Box display="flex" justifyContent="flex-end" mt={2}>
                                     <Button variant="contained"
                                         startIcon={<EditIcon />}

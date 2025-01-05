@@ -13,6 +13,8 @@ import BackIcon from '../../reusible/BackIcon';
 
 import axiosPublicURL from '../../views/hooks/AxiosHook'
 
+import { PacmanLoader } from 'react-spinners';
+
 export default function Edit_city() {
 
     const getToken = () => {
@@ -31,10 +33,12 @@ export default function Edit_city() {
 
     const navigate = useNavigate();
 
+    const [loading, setLoading] = useState(false);
 
 
     // Function to fetch country data
     const handleSingleData = async () => {
+        setLoading(true);
         try {
             const response = await axiosPublicURL().post(
                 'api/city/get',
@@ -46,7 +50,7 @@ export default function Edit_city() {
                     },
                 }
             );
-
+            setLoading(false);
             // Extract data
             const cities = response.data?.data;
 
@@ -68,6 +72,7 @@ export default function Edit_city() {
                 toast.error('City not found.');
             }
         } catch (error) {
+            setLoading(false)
             console.error('Error fetching city data:', error);
             toast.error('An error occurred while fetching city data.');
         }
@@ -164,38 +169,46 @@ export default function Edit_city() {
                                 >
                                     City Edit Form
                                 </Typography>
-                                <FormControl
-                                    variant="standard"
-                                    sx={{ margin: 1, width: '100%', gap: '10px' }}
-                                >
-                                    {/* Input for id */}
-                                    <TextField
-                                        required
-                                        id="outlined-required"
-                                        label="ID"
-                                        value={id}
-                                        onChange={(e) => setid(e.target.value)}
-                                    />
-                                    {/* Input for city name */}
-                                    <TextField
-                                        required
-                                        id="outlined-required"
-                                        label="City Name"
-                                        value={city}
-                                        onChange={(e) => setCity(e.target.value)}
-                                    />
+                                {
+                                    loading ? (
+                                        <div style={{ display: 'flex', justifyContent: 'center', marginTop: '5px' }}>
+                                            <PacmanLoader
+                                                speedMultiplier={3} color='#a41af4' loading={loading} size={20} />
+                                        </div>
+                                    ) : (
+                                        <FormControl
+                                            variant="standard"
+                                            sx={{ margin: 1, width: '100%', gap: '10px' }}
+                                        >
+                                            {/* Input for id */}
+                                            <TextField
+                                                required
+                                                id="outlined-required"
+                                                label="ID"
+                                                value={id}
+                                                onChange={(e) => setid(e.target.value)}
+                                            />
+                                            {/* Input for city name */}
+                                            <TextField
+                                                required
+                                                id="outlined-required"
+                                                label="City Name"
+                                                value={city}
+                                                onChange={(e) => setCity(e.target.value)}
+                                            />
 
-                                    {/* Dropdown for selecting state */}
-                                    <Select
-                                        options={getStates}
-                                        value={stateId} // Selected value (single object with `value` and `label`)
-                                        onChange={(selected) => {
-                                            setStateId(selected); // Update selected country in state
-                                            setSelectedState(selected); // Optionally update additional state
-                                        }}
-                                        placeholder="Select State ID"
-                                    />
-                                </FormControl>
+                                            {/* Dropdown for selecting state */}
+                                            <Select
+                                                options={getStates}
+                                                value={stateId} // Selected value (single object with `value` and `label`)
+                                                onChange={(selected) => {
+                                                    setStateId(selected); // Update selected country in state
+                                                    setSelectedState(selected); // Optionally update additional state
+                                                }}
+                                                placeholder="Select State ID"
+                                            />
+                                        </FormControl>
+                                    )}
                                 <Box display="flex" justifyContent="flex-end" mt={2}>
                                     <Button variant="contained"
                                         startIcon={<EditIcon />}
