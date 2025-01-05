@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { DataGrid } from "@mui/x-data-grid";
+import axios from "axios";
 import Cookies from "js-cookie";
 import PaginationControls from "./PaginationControls";
 import { Add, Edit, View } from "./Add_Edit_View";
@@ -8,6 +9,7 @@ import { IconButton } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 
 import axiosPublicURL from "../views/hooks/AxiosHook";
+import { FaSearch, FaTimes } from "react-icons/fa";
 
 const ReusableDataTable = ({ apiUrl, columns, deleteApi }) => {
     const [rows, setRows] = useState([]);
@@ -154,6 +156,13 @@ const ReusableDataTable = ({ apiUrl, columns, deleteApi }) => {
         ),
     };
 
+      // Clear the search query
+      const handleClearSearch = () => {
+        setSearchQuery(""); // Clear the search query
+        setFilteredRows(rows); // Reset to original rows when cleared
+    };
+
+
     return (
         <div className="container mx-auto mt-5">
             <div className="flex justify-between mx-auto mb-4">
@@ -177,20 +186,29 @@ const ReusableDataTable = ({ apiUrl, columns, deleteApi }) => {
                 </div>
 
                 {/* Search Bar */}
-                <div>
-                    <label htmlFor="search" className="mr-2">
-                        Search:
-                    </label>
+                <div className="relative">
                     <input
+
                         id="search"
+                        autoComplete="off"
                         type="text"
                         value={searchQuery}
                         onChange={handleSearchChange}
-                        placeholder="Search..."
-                        className="px-2 py-1 border border-gray-300 rounded"
+                        placeholder={ 'Search...'}
+                        className={` transition-all duration-300 ease-in-out focus:w-64 focus:outline-none focus:ring-2 w-32 focus:ring-blue-500 px-3 py-2 pr-8 border border-gray-300 rounded`}
                     />
+                    <div className="absolute inset-y-0 flex items-center right-2">
+                        {searchQuery ? (
+                            <FaTimes
+                                onClick={handleClearSearch}
+                                className="text-gray-500 cursor-pointer"
+                            />
+                        ) : (
+                            <FaSearch className="text-gray-500" />
+                        )}
+                    </div>
                 </div>
-
+                
             </div>
             <div className="mb-3">
                 <Add />
