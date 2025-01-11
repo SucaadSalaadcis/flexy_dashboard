@@ -197,7 +197,7 @@ const ReusableDataTable = ({ apiUrl, columns, deleteApi }) => {
                         value={searchQuery}
                         onChange={handleSearchChange}
                         placeholder={'Search...'}
-                        className={` transition-all duration-300 ease-in-out focus:w-64 focus:outline-none focus:ring-2 w-32 focus:ring-blue-500 px-3 py-2 pr-8 border border-gray-300 rounded`}
+                        className={` w-64 focus:outline-none  px-3 py-2 pr-8 border border-gray-300 rounded`}
                     />
                     <div className="absolute inset-y-0 flex items-center right-2">
                         {searchQuery ? (
