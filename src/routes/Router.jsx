@@ -50,7 +50,7 @@ const ThemeRoutes = [
     path: "/sign_in",
     element: <Sign_in />,
   },
-  // 404 if you go to wrong path 
+  // 404 if you go to the wrong path 
   { path: "*", element: <Err_404 /> },
 
   // Routes under FullLayout
