@@ -88,7 +88,7 @@ export default function Edit_site() {
         }
     };
 
-    // Fetch data on component mount
+
     useEffect(() => {
         handleSingleData();
     }, []);
