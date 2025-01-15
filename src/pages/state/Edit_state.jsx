@@ -83,7 +83,6 @@ export default function Edit_state() {
         }
     };
 
-    // Fetch data on component mount
     useEffect(() => {
         handleSingleData();
     }, []);
